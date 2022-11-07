@@ -1,6 +1,10 @@
 package org.objectionary.deog.steps
 
-import org.objectionary.deog.*
+import org.objectionary.deog.abstract
+import org.objectionary.deog.base
+import org.objectionary.deog.line
+import org.objectionary.deog.name
+import org.objectionary.deog.packageName
 import org.objectionary.deog.repr.DGraphCondAttr
 import org.objectionary.deog.repr.DGraphCondNode
 import org.objectionary.deog.repr.DeogGraph

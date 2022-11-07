@@ -1,6 +1,10 @@
 package org.objectionary.deog.steps
 
-import org.objectionary.deog.*
+import org.objectionary.deog.abstract
+import org.objectionary.deog.base
+import org.objectionary.deog.findRef
+import org.objectionary.deog.name
+import org.objectionary.deog.packageName
 import org.objectionary.deog.repr.DGraphAttr
 import org.objectionary.deog.repr.DGraphNode
 import org.objectionary.deog.repr.DeogGraph
@@ -68,10 +72,12 @@ internal class InnerPropagator(
                 val abstract = tmpKey.parentNode.parentNode
                 resolveAttrs(tmpKey, abstract, key)
             }
+
             "$" -> {
                 val abstract = tmpKey
                 resolveAttrs(tmpKey, abstract, key)
             }
+
             else -> {
                 val abstract = resolveRefs(tmpKey) ?: return
                 resolveAttrs(tmpKey, abstract, key)
@@ -107,16 +113,24 @@ internal class InnerPropagator(
             tmpNode = tmpNode?.nextSibling?.nextSibling
         }
         val parent = node.parentNode ?: return
-        deogGraph.dgNodes.find { it.body == parent } ?: run { deogGraph.dgNodes.add(
-            DGraphNode(
-                parent,
-                packageName(parent)
+        deogGraph.dgNodes.find { it.body == parent } ?: run {
+            deogGraph.dgNodes.add(
+                DGraphNode(
+                    parent,
+                    packageName(parent)
+                )
             )
-        ) }
+        }
         val dgParent = deogGraph.dgNodes.find { it.body == parent } ?: return
         tmpAbstract.attributes.forEach { graphNode ->
             dgParent.attributes.find { graphNode.body == it.body }
-                ?: dgParent.attributes.add(DGraphAttr(graphNode.name, graphNode.parentDistance + 1, graphNode.body))
+                ?: dgParent.attributes.add(
+                    DGraphAttr(
+                        graphNode.name,
+                        graphNode.parentDistance + 1,
+                        graphNode.body
+                    )
+                )
         }
         deogGraph.connect(dgParent, tmpAbstract)
         return

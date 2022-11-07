@@ -1,15 +1,15 @@
 package org.objectionary.deog.launch
 
+import org.objectionary.deog.GraphBuilder
 import org.objectionary.deog.repr.DeogGraph
+import org.objectionary.deog.steps.AttributesSetter
+import org.objectionary.deog.steps.CondAttributesSetter
+import org.objectionary.deog.steps.InnerPropagator
 import com.jcabi.xml.XML
 import com.jcabi.xml.XMLDocument
 import com.yegor256.xsline.TrClasspath
 import com.yegor256.xsline.Xsline
 import org.eolang.parser.ParsingTrain
-import org.objectionary.deog.steps.AttributesSetter
-import org.objectionary.deog.steps.CondAttributesSetter
-import org.objectionary.deog.GraphBuilder
-import org.objectionary.deog.steps.InnerPropagator
 import org.slf4j.LoggerFactory
 import org.w3c.dom.Document
 import java.io.File
