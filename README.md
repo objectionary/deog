@@ -1,3 +1,13 @@
+<img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
+
+[![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
+[![DevOps By Rultor.com](http://www.rultor.com/b/objectionary/eo-files)](http://www.rultor.com/p/objectionary/deog)
+[![We recommend IntelliJ IDEA](https://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
+
+[//]: # ([![mvn]&#40;https://github.com/objectionary/deog/actions/workflows/build.yml/badge.svg?branch=master&#41;]&#40;https://github.com/objectionary/deog/actions/workflows/build.yml&#41;)
+[//]: # ([![Hits-of-Code]&#40;https://hitsofcode.com/github/objectionary/deog&#41;]&#40;https://hitsofcode.com/view/github/objectionary/deog&#41;)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/objectionary/deog/blob/master/LICENSE.txt)
+
 ### Decoration graph of EO objects
 
 DEOG takes a collection of `org.w3c.dom.Document` objects and constructs an inheritance graph, connecting all of them.
