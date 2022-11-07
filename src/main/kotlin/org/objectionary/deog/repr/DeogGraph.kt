@@ -29,7 +29,7 @@ import org.w3c.dom.Node
 /**
  * Decoration hierarchy graph representation
  */
-class DGraph {
+class DeogGraph {
     /**
      * Collection of all graph nodes
      */

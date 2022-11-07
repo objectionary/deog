@@ -1,11 +1,11 @@
 package org.objectionary.deog
 
+import org.objectionary.deog.repr.DeogGraph
 import com.jcabi.xml.XML
 import com.jcabi.xml.XMLDocument
 import com.yegor256.xsline.TrClasspath
 import com.yegor256.xsline.Xsline
 import org.eolang.parser.ParsingTrain
-import org.objectionary.deog.repr.DGraph
 import org.slf4j.LoggerFactory
 import org.w3c.dom.Document
 import java.io.File
@@ -46,7 +46,7 @@ internal fun buildGraph(
     path: String,
     gather: Boolean = true,
     dirPostfix: String = "deog"
-): DGraph {
+): DeogGraph {
     Files.walk(Paths.get(path))
         .filter(Files::isRegularFile)
         .forEach {
@@ -56,7 +56,7 @@ internal fun buildGraph(
         }
     val builder = GraphBuilder(documents)
     builder.createGraph()
-    return builder.DGraph
+    return builder.deogGraph
 }
 
 /**

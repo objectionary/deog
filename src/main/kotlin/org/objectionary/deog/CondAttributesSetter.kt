@@ -1,18 +1,18 @@
 package org.objectionary.deog
 
-import org.objectionary.deog.repr.DGraph
 import org.objectionary.deog.repr.DGraphCondAttr
 import org.objectionary.deog.repr.DGraphCondNode
+import org.objectionary.deog.repr.DeogGraph
 import org.objectionary.deog.repr.DgNodeCondition
 import org.w3c.dom.Node
 
 /**
  * Class for processing conditional attributes
  *
- * @property DGraph graph of the program
+ * @property deogGraph graph of the program
  */
 internal class CondAttributesSetter(
-    private val DGraph: DGraph
+    private val deogGraph: DeogGraph
 ) {
     private val conditions: MutableSet<Node> = mutableSetOf()
 
@@ -25,7 +25,7 @@ internal class CondAttributesSetter(
     }
 
     private fun collectConditions() {
-        val objects = DGraph.initialObjects
+        val objects = deogGraph.initialObjects
         for (node in objects) {
             val base = base(node) ?: continue
             if (base == ".if") {
@@ -62,11 +62,11 @@ internal class CondAttributesSetter(
             traverseParents(node.parentNode, dgCond.freeVars)
             name(node)?.let { name ->
                 if (name != "@") {
-                    DGraph.dgNodes.add(DGraphCondNode(node, packageName(node), dgCond, fstOption, sndOption))
-                    val parent = DGraph.dgNodes.find { it.body == node.parentNode }
+                    deogGraph.dgNodes.add(DGraphCondNode(node, packageName(node), dgCond, fstOption, sndOption))
+                    val parent = deogGraph.dgNodes.find { it.body == node.parentNode }
                     parent?.attributes?.add(DGraphCondAttr(name, 0, node, dgCond, fstOption, sndOption))
                 } else {
-                    val parent = DGraph.dgNodes.find { it.body == node.parentNode }
+                    val parent = deogGraph.dgNodes.find { it.body == node.parentNode }
                     parent?.attributes?.add(DGraphCondAttr(name, 0, node, dgCond, fstOption, sndOption))
                 }
             }

@@ -24,15 +24,15 @@
 
 package org.objectionary.deog
 
-import org.objectionary.deog.repr.DGraph
 import org.objectionary.deog.repr.DGraphAttr
 import org.objectionary.deog.repr.DGraphNode
+import org.objectionary.deog.repr.DeogGraph
 import org.w3c.dom.Node
 
 /**
- * Sets all default attributes of nodes and propagates attributes through the [DGraph]
+ * Sets all default attributes of nodes and propagates attributes through the [deogGraph]
  */
-internal class AttributesSetter(private val DGraph: DGraph) {
+internal class AttributesSetter(private val deogGraph: DeogGraph) {
     /**
      * Aggregate the process of attributes pushing
      */
@@ -45,7 +45,7 @@ internal class AttributesSetter(private val DGraph: DGraph) {
      * Add all already existent attributes to attributes list of the node
      */
     private fun setDefaultAttributes() {
-        DGraph.dgNodes.forEach { node ->
+        deogGraph.dgNodes.forEach { node ->
             val attributes = node.body.childNodes
             for (j in 0 until attributes.length) {
                 val attr: Node = attributes.item(j)
@@ -61,7 +61,7 @@ internal class AttributesSetter(private val DGraph: DGraph) {
     /**
      * Push attributes from parents to children
      */
-    private fun pushAttributes(): Unit = DGraph.heads.forEach { dfsPush(it, null, mutableMapOf()) }
+    private fun pushAttributes(): Unit = deogGraph.heads.forEach { dfsPush(it, null, mutableMapOf()) }
 
     private fun dfsPush(
         node: DGraphNode,

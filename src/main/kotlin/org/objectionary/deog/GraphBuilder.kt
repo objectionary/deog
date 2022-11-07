@@ -24,8 +24,8 @@
 
 package org.objectionary.deog
 
-import org.objectionary.deog.repr.DGraph
 import org.objectionary.deog.repr.DGraphNode
+import org.objectionary.deog.repr.DeogGraph
 import org.slf4j.LoggerFactory
 import org.w3c.dom.Document
 import org.w3c.dom.Node
@@ -42,7 +42,7 @@ class GraphBuilder(private val documents: MutableMap<Document, String>) {
     /**
      * Graph of the program to be analysed
      */
-    val DGraph = DGraph()
+    val deogGraph = DeogGraph()
 
     /**
      * Aggregates the process of graph creation:
@@ -52,18 +52,18 @@ class GraphBuilder(private val documents: MutableMap<Document, String>) {
         try {
             constructInheritance()
             setLeaves()
-            DGraph.leaves.forEach { setHeads(it, mutableMapOf()) }
+            deogGraph.leaves.forEach { setHeads(it, mutableMapOf()) }
             val thinnedOutHeads: MutableSet<DGraphNode> = mutableSetOf()
-            DGraph.heads.forEach {
+            deogGraph.heads.forEach {
                 val found = mutableListOf(false)
                 thinOutHeads(it, thinnedOutHeads, mutableSetOf(), found)
                 if (!found[0]) {
                     thinnedOutHeads.add(it)
                 }
             }
-            DGraph.heads.clear()
-            thinnedOutHeads.forEach { DGraph.heads.add(it) }
-            processClosedCycles(DGraph)
+            deogGraph.heads.clear()
+            thinnedOutHeads.forEach { deogGraph.heads.add(it) }
+            processClosedCycles(deogGraph)
         } catch (e: Exception) {
             logger.error(e.printStackTrace().toString())
         }
@@ -74,7 +74,7 @@ class GraphBuilder(private val documents: MutableMap<Document, String>) {
             val name = name(it)
             if (abstract(it) != null && name != null) {
                 abstracts.getOrPut(name) { mutableSetOf() }.add(it)
-                DGraph.dgNodes.add(DGraphNode(it, packageName))
+                deogGraph.dgNodes.add(DGraphNode(it, packageName))
             }
         }
 
@@ -93,7 +93,7 @@ class GraphBuilder(private val documents: MutableMap<Document, String>) {
     private fun getAbstractViaPackage(baseNodeName: String?): DGraphNode? {
         val packageName = baseNodeName?.substringBeforeLast('.')
         val nodeName = baseNodeName?.substringAfterLast('.')
-        return DGraph.dgNodes.find { it.name.equals(nodeName) && it.packageName == packageName }
+        return deogGraph.dgNodes.find { it.name.equals(nodeName) && it.packageName == packageName }
     }
 
     private fun constructInheritance() {
@@ -105,9 +105,9 @@ class GraphBuilder(private val documents: MutableMap<Document, String>) {
                 objects.add(docObjects.item(i))
             }
             abstracts(objects, packageName)
-            DGraph.initialObjects.addAll(objects)
+            deogGraph.initialObjects.addAll(objects)
         }
-        for (node in DGraph.initialObjects) {
+        for (node in deogGraph.initialObjects) {
             val name = name(node) ?: continue
             if (name == "@") {
                 // check that @ attribute's base has an abstract object in this program
@@ -117,30 +117,30 @@ class GraphBuilder(private val documents: MutableMap<Document, String>) {
                     getAbstractViaRef(baseNodeName, baseNodeRef) ?: getAbstractViaPackage(baseNodeName)?.body
                 abstractBaseNode?.let {
                     val parentNode = node.parentNode ?: return
-                    DGraph.dgNodes.find { it.body.attributes == parentNode.attributes }
-                        ?: run { DGraph.dgNodes.add(DGraphNode(parentNode, packageName(parentNode))) }
-                    val igChild = DGraph.dgNodes.find { it.body.attributes == parentNode.attributes }!!
-                    DGraph.dgNodes.find { it.body.attributes == abstractBaseNode.attributes }
-                        ?: run { DGraph.dgNodes.add(DGraphNode(abstractBaseNode, packageName(abstractBaseNode))) }
-                    val dgParent = DGraph.dgNodes.find { it.body.attributes == abstractBaseNode.attributes }!!
-                    DGraph.connect(igChild, dgParent)
+                    deogGraph.dgNodes.find { it.body.attributes == parentNode.attributes }
+                        ?: run { deogGraph.dgNodes.add(DGraphNode(parentNode, packageName(parentNode))) }
+                    val igChild = deogGraph.dgNodes.find { it.body.attributes == parentNode.attributes }!!
+                    deogGraph.dgNodes.find { it.body.attributes == abstractBaseNode.attributes }
+                        ?: run { deogGraph.dgNodes.add(DGraphNode(abstractBaseNode, packageName(abstractBaseNode))) }
+                    val dgParent = deogGraph.dgNodes.find { it.body.attributes == abstractBaseNode.attributes }!!
+                    deogGraph.connect(igChild, dgParent)
                 }
             }
         }
     }
 
     private fun checkNodes(node: DGraphNode): DGraphNode? =
-        DGraph.dgNodes.find { it.body.attributes == node.body.attributes }
+        deogGraph.dgNodes.find { it.body.attributes == node.body.attributes }
 
     private fun setLeaves() =
-        DGraph.dgNodes.filter { it.children.isEmpty() }.forEach { DGraph.leaves.add(it) }
+        deogGraph.dgNodes.filter { it.children.isEmpty() }.forEach { deogGraph.leaves.add(it) }
 
     private fun setHeads(
         node: DGraphNode,
         visited: MutableMap<DGraphNode, Boolean>
     ) {
         if (visited.containsKey(node) || node.parents.isEmpty()) {
-            DGraph.heads.add(node)
+            deogGraph.heads.add(node)
         } else {
             visited[node] = true
             node.parents.forEach { setHeads(it, visited) }

@@ -25,11 +25,11 @@
 package org.objectionary.deog.unit.graph.attr
 
 import org.objectionary.deog.AttributesSetter
-import org.objectionary.deog.repr.DGraphNode
 import org.objectionary.deog.buildGraph
 import org.objectionary.deog.documents
-import org.apache.commons.io.FileUtils
+import org.objectionary.deog.repr.DGraphNode
 import org.objectionary.deog.unit.graph.TestBase
+import org.apache.commons.io.FileUtils
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
