@@ -1,0 +1,16 @@
+NODE: name="animal"
+animal CHILD:
+NODE: name="mouse"
+mouse CHILD:
+NODE: name="rat"
+NODE: name="eat"
+eat CHILD:
+NODE: name="rat_pii"
+rat_pii CHILD:
+NODE: name="main"
+NODE: name="live"
+live CHILD:
+NODE: name="pii"
+live CHILD:
+NODE: name="talk"
+NODE: name="smth"
