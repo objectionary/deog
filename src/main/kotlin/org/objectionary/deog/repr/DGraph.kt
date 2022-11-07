@@ -29,11 +29,11 @@ import org.w3c.dom.Node
 /**
  * Decoration hierarchy graph representation
  */
-class Graph {
+class DGraph {
     /**
      * Collection of all graph nodes
      */
-    val igNodes: MutableSet<IGraphNode> = mutableSetOf()
+    val dgNodes: MutableSet<DGraphNode> = mutableSetOf()
 
     /**
      * Collection of initial xml objects
@@ -43,12 +43,12 @@ class Graph {
     /**
      * "Root nodes" of the graph, it is guaranteed that the whole graph can be traversed starting from these nodes
      */
-    val heads: MutableSet<IGraphNode> = mutableSetOf()
+    val heads: MutableSet<DGraphNode> = mutableSetOf()
 
     /**
      * Leaf nodes of the graph, they don't have any children
      */
-    val leaves: MutableList<IGraphNode> = mutableListOf()
+    val leaves: MutableList<DGraphNode> = mutableListOf()
 
     /**
      * Connects [child] with [parent] in the graph
@@ -57,8 +57,8 @@ class Graph {
      * @param parent parent node
      */
     fun connect(
-        child: IGraphNode,
-        parent: IGraphNode
+        child: DGraphNode,
+        parent: DGraphNode
     ) {
         child.parents.add(parent)
         parent.children.add(child)

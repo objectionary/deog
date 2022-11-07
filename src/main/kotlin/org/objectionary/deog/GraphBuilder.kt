@@ -24,8 +24,8 @@
 
 package org.objectionary.deog
 
-import org.objectionary.deog.repr.Graph
-import org.objectionary.deog.repr.IGraphNode
+import org.objectionary.deog.repr.DGraph
+import org.objectionary.deog.repr.DGraphNode
 import org.slf4j.LoggerFactory
 import org.w3c.dom.Document
 import org.w3c.dom.Node
@@ -42,7 +42,7 @@ class GraphBuilder(private val documents: MutableMap<Document, String>) {
     /**
      * Graph of the program to be analysed
      */
-    val graph = Graph()
+    val DGraph = DGraph()
 
     /**
      * Aggregates the process of graph creation:
@@ -52,18 +52,18 @@ class GraphBuilder(private val documents: MutableMap<Document, String>) {
         try {
             constructInheritance()
             setLeaves()
-            graph.leaves.forEach { setHeads(it, mutableMapOf()) }
-            val thinnedOutHeads: MutableSet<IGraphNode> = mutableSetOf()
-            graph.heads.forEach {
+            DGraph.leaves.forEach { setHeads(it, mutableMapOf()) }
+            val thinnedOutHeads: MutableSet<DGraphNode> = mutableSetOf()
+            DGraph.heads.forEach {
                 val found = mutableListOf(false)
                 thinOutHeads(it, thinnedOutHeads, mutableSetOf(), found)
                 if (!found[0]) {
                     thinnedOutHeads.add(it)
                 }
             }
-            graph.heads.clear()
-            thinnedOutHeads.forEach { graph.heads.add(it) }
-            processClosedCycles(graph)
+            DGraph.heads.clear()
+            thinnedOutHeads.forEach { DGraph.heads.add(it) }
+            processClosedCycles(DGraph)
         } catch (e: Exception) {
             logger.error(e.printStackTrace().toString())
         }
@@ -74,7 +74,7 @@ class GraphBuilder(private val documents: MutableMap<Document, String>) {
             val name = name(it)
             if (abstract(it) != null && name != null) {
                 abstracts.getOrPut(name) { mutableSetOf() }.add(it)
-                graph.igNodes.add(IGraphNode(it, packageName))
+                DGraph.dgNodes.add(DGraphNode(it, packageName))
             }
         }
 
@@ -90,10 +90,10 @@ class GraphBuilder(private val documents: MutableMap<Document, String>) {
             null
         }
 
-    private fun getAbstractViaPackage(baseNodeName: String?): IGraphNode? {
+    private fun getAbstractViaPackage(baseNodeName: String?): DGraphNode? {
         val packageName = baseNodeName?.substringBeforeLast('.')
         val nodeName = baseNodeName?.substringAfterLast('.')
-        return graph.igNodes.find { it.name.equals(nodeName) && it.packageName == packageName }
+        return DGraph.dgNodes.find { it.name.equals(nodeName) && it.packageName == packageName }
     }
 
     private fun constructInheritance() {
@@ -105,9 +105,9 @@ class GraphBuilder(private val documents: MutableMap<Document, String>) {
                 objects.add(docObjects.item(i))
             }
             abstracts(objects, packageName)
-            graph.initialObjects.addAll(objects)
+            DGraph.initialObjects.addAll(objects)
         }
-        for (node in graph.initialObjects) {
+        for (node in DGraph.initialObjects) {
             val name = name(node) ?: continue
             if (name == "@") {
                 // check that @ attribute's base has an abstract object in this program
@@ -117,30 +117,30 @@ class GraphBuilder(private val documents: MutableMap<Document, String>) {
                     getAbstractViaRef(baseNodeName, baseNodeRef) ?: getAbstractViaPackage(baseNodeName)?.body
                 abstractBaseNode?.let {
                     val parentNode = node.parentNode ?: return
-                    graph.igNodes.find { it.body.attributes == parentNode.attributes }
-                        ?: run { graph.igNodes.add(IGraphNode(parentNode, packageName(parentNode))) }
-                    val igChild = graph.igNodes.find { it.body.attributes == parentNode.attributes }!!
-                    graph.igNodes.find { it.body.attributes == abstractBaseNode.attributes }
-                        ?: run { graph.igNodes.add(IGraphNode(abstractBaseNode, packageName(abstractBaseNode))) }
-                    val igParent = graph.igNodes.find { it.body.attributes == abstractBaseNode.attributes }!!
-                    graph.connect(igChild, igParent)
+                    DGraph.dgNodes.find { it.body.attributes == parentNode.attributes }
+                        ?: run { DGraph.dgNodes.add(DGraphNode(parentNode, packageName(parentNode))) }
+                    val igChild = DGraph.dgNodes.find { it.body.attributes == parentNode.attributes }!!
+                    DGraph.dgNodes.find { it.body.attributes == abstractBaseNode.attributes }
+                        ?: run { DGraph.dgNodes.add(DGraphNode(abstractBaseNode, packageName(abstractBaseNode))) }
+                    val dgParent = DGraph.dgNodes.find { it.body.attributes == abstractBaseNode.attributes }!!
+                    DGraph.connect(igChild, dgParent)
                 }
             }
         }
     }
 
-    private fun checkNodes(node: IGraphNode): IGraphNode? =
-        graph.igNodes.find { it.body.attributes == node.body.attributes }
+    private fun checkNodes(node: DGraphNode): DGraphNode? =
+        DGraph.dgNodes.find { it.body.attributes == node.body.attributes }
 
     private fun setLeaves() =
-        graph.igNodes.filter { it.children.isEmpty() }.forEach { graph.leaves.add(it) }
+        DGraph.dgNodes.filter { it.children.isEmpty() }.forEach { DGraph.leaves.add(it) }
 
     private fun setHeads(
-        node: IGraphNode,
-        visited: MutableMap<IGraphNode, Boolean>
+        node: DGraphNode,
+        visited: MutableMap<DGraphNode, Boolean>
     ) {
         if (visited.containsKey(node) || node.parents.isEmpty()) {
-            graph.heads.add(node)
+            DGraph.heads.add(node)
         } else {
             visited[node] = true
             node.parents.forEach { setHeads(it, visited) }
@@ -148,9 +148,9 @@ class GraphBuilder(private val documents: MutableMap<Document, String>) {
     }
 
     private fun thinOutHeads(
-        node: IGraphNode,
-        toBeRemoved: MutableSet<IGraphNode>,
-        visited: MutableSet<IGraphNode>,
+        node: DGraphNode,
+        toBeRemoved: MutableSet<DGraphNode>,
+        visited: MutableSet<DGraphNode>,
         found: MutableList<Boolean>
     ) {
         if (found[0] || toBeRemoved.contains(node)) {

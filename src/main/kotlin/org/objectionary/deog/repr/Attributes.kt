@@ -10,7 +10,7 @@ import org.w3c.dom.Node
  * @property body corresponding xml file node
  */
 @Suppress("CLASS_NAME_INCORRECT")
-open class IGraphAttr(
+open class DGraphAttr(
     open val name: String,
     open val parentDistance: Int,
     open val body: Node
@@ -32,14 +32,14 @@ open class IGraphAttr(
  * @property sndOption list of nodes representing the option on the false branch
  */
 @Suppress("CLASS_NAME_INCORRECT")
-class IGraphCondAttr(
+class DGraphCondAttr(
     name: String,
     parentDistance: Int,
     body: Node,
-    val cond: IgNodeCondition,
+    val cond: DgNodeCondition,
     val fstOption: MutableList<Node>,
     val sndOption: MutableList<Node>
-) : IGraphAttr(
+) : DGraphAttr(
     name,
     parentDistance,
     body

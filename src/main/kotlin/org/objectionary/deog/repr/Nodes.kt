@@ -10,7 +10,7 @@ import org.w3c.dom.Node
  * @property packageName name of the package in which the described EO object is located
  */
 @Suppress("CLASS_NAME_INCORRECT")
-open class IGraphNode(
+open class DGraphNode(
     open val body: Node,
     open val packageName: String
 ) {
@@ -22,17 +22,17 @@ open class IGraphNode(
     /**
      * Children of this node
      */
-    val children: MutableSet<IGraphNode> = mutableSetOf()
+    val children: MutableSet<DGraphNode> = mutableSetOf()
 
     /**
      * Parents of this node
      */
-    val parents: MutableSet<IGraphNode> = mutableSetOf()
+    val parents: MutableSet<DGraphNode> = mutableSetOf()
 
     /**
      * List of attributes of this node (inner objects and propagated attributes)
      */
-    val attributes: MutableList<IGraphAttr> = mutableListOf()
+    val attributes: MutableList<DGraphAttr> = mutableListOf()
 
     /**
      * List of attributes of this node (inner objects and propagated attributes)
@@ -53,13 +53,13 @@ open class IGraphNode(
  *  IgNodeCondition structure and refactor its usages
  */
 @Suppress("CLASS_NAME_INCORRECT")
-class IGraphCondNode(
+class DGraphCondNode(
     override val body: Node,
     override val packageName: String,
-    val cond: IgNodeCondition,
+    val cond: DgNodeCondition,
     val fstOption: MutableList<Node>,
     val sndOption: MutableList<Node>
-) : IGraphNode(body, packageName)
+) : DGraphNode(body, packageName)
 
 /**
  * Conditional node's condition representation
@@ -67,7 +67,7 @@ class IGraphCondNode(
  * @property cond list of nodes representing the condition
  */
 @Suppress("CLASS_NAME_INCORRECT")
-data class IgNodeCondition(
+data class DgNodeCondition(
     val cond: MutableList<Node>
 ) {
     /**

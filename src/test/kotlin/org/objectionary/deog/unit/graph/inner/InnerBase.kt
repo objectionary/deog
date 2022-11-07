@@ -26,7 +26,7 @@ package org.objectionary.deog.unit.graph.inner
 
 import org.objectionary.deog.AttributesSetter
 import org.objectionary.deog.InnerPropagator
-import org.objectionary.deog.repr.IGraphNode
+import org.objectionary.deog.repr.DGraphNode
 import org.objectionary.deog.buildGraph
 import org.objectionary.deog.documents
 import org.apache.commons.io.FileUtils
@@ -52,7 +52,7 @@ open class InnerBase : TestBase {
         val innerPropagator = InnerPropagator(graph)
         innerPropagator.propagateInnerAttrs()
         val out = ByteArrayOutputStream()
-        printOut(out, graph.igNodes)
+        printOut(out, graph.dgNodes)
         val actual = String(out.toByteArray())
         val bufferedReader: BufferedReader = File(constructOutPath(path)).bufferedReader()
         val expected = bufferedReader.use { it.readText() }
@@ -72,7 +72,7 @@ open class InnerBase : TestBase {
 
     private fun printOut(
         out: ByteArrayOutputStream,
-        nodes: Set<IGraphNode>
+        nodes: Set<DGraphNode>
     ) {
         nodes.sortedBy { it.name }.forEach { node ->
             out.write("NODE: ${node.name} ATTRIBUTES:\n".toByteArray())

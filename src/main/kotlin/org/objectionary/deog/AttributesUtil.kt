@@ -24,8 +24,8 @@
 
 package org.objectionary.deog
 
-import org.objectionary.deog.repr.Graph
-import org.objectionary.deog.repr.IGraphNode
+import org.objectionary.deog.repr.DGraph
+import org.objectionary.deog.repr.DGraphNode
 import org.w3c.dom.Node
 
 /**
@@ -98,16 +98,16 @@ fun packageName(node: Node?): String {
  *
  * @param node node to be handled
  * @param objects list of xml objects
- * @param graph graph
+ * @param DGraph graph
  * @return node found through refs
  */
 @Suppress("AVOID_NULL_CHECKS")
 fun findRef(
     node: Node?,
     objects: MutableSet<Node>,
-    graph: Graph
+    DGraph: DGraph
 ): Node? {
-    val ref = ref(node) ?: return getAbstractViaPackage(base(node), graph)?.body
+    val ref = ref(node) ?: return getAbstractViaPackage(base(node), DGraph)?.body
     objects.forEach {
         if (line(it) == ref) {
             if (abstract(it) != null && packageName(node) == packageName(it)) {
@@ -116,9 +116,9 @@ fun findRef(
             if (abstract(it) == null && packageName(node) == packageName(it)) {
                 val traversed = walkDotChain(it)
                 return if (traversed == null) {
-                    findRef(it, objects, graph)
+                    findRef(it, objects, DGraph)
                 } else {
-                    findRef(traversed, objects, graph)
+                    findRef(traversed, objects, DGraph)
                 }
             }
         }
@@ -139,8 +139,8 @@ private fun walkDotChain(
     return sibling
 }
 
-private fun getAbstractViaPackage(baseNodeName: String?, graph: Graph): IGraphNode? {
+private fun getAbstractViaPackage(baseNodeName: String?, DGraph: DGraph): DGraphNode? {
     val packageName = baseNodeName?.substringBeforeLast('.')
     val nodeName = baseNodeName?.substringAfterLast('.')
-    return graph.igNodes.find { it.name.equals(nodeName) && it.packageName == packageName }
+    return DGraph.dgNodes.find { it.name.equals(nodeName) && it.packageName == packageName }
 }

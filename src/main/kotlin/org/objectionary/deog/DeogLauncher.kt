@@ -5,7 +5,7 @@ import com.jcabi.xml.XMLDocument
 import com.yegor256.xsline.TrClasspath
 import com.yegor256.xsline.Xsline
 import org.eolang.parser.ParsingTrain
-import org.objectionary.deog.repr.Graph
+import org.objectionary.deog.repr.DGraph
 import org.slf4j.LoggerFactory
 import org.w3c.dom.Document
 import java.io.File
@@ -22,7 +22,7 @@ val documents: MutableMap<Document, String> = mutableMapOf()
  * Aggregates all steps of analysis
  *
  * @param path path to the directory to be analysed
- * @param dirPostfix postfix of the resulting directory
+ * @param dirPostfix postfix of the resulting directory, which will be created after the analysis
  */
 fun launch(path: String, dirPostfix: String = "deog") {
     documents.clear()
@@ -46,7 +46,7 @@ internal fun buildGraph(
     path: String,
     gather: Boolean = true,
     dirPostfix: String = "deog"
-): Graph {
+): DGraph {
     Files.walk(Paths.get(path))
         .filter(Files::isRegularFile)
         .forEach {
@@ -56,7 +56,7 @@ internal fun buildGraph(
         }
     val builder = GraphBuilder(documents)
     builder.createGraph()
-    return builder.graph
+    return builder.DGraph
 }
 
 /**

@@ -1,18 +1,18 @@
 package org.objectionary.deog
 
-import org.objectionary.deog.repr.Graph
-import org.objectionary.deog.repr.IGraphCondAttr
-import org.objectionary.deog.repr.IGraphCondNode
-import org.objectionary.deog.repr.IgNodeCondition
+import org.objectionary.deog.repr.DGraph
+import org.objectionary.deog.repr.DGraphCondAttr
+import org.objectionary.deog.repr.DGraphCondNode
+import org.objectionary.deog.repr.DgNodeCondition
 import org.w3c.dom.Node
 
 /**
  * Class for processing conditional attributes
  *
- * @property graph graph of the program
+ * @property DGraph graph of the program
  */
 internal class CondAttributesSetter(
-    private val graph: Graph
+    private val DGraph: DGraph
 ) {
     private val conditions: MutableSet<Node> = mutableSetOf()
 
@@ -25,7 +25,7 @@ internal class CondAttributesSetter(
     }
 
     private fun collectConditions() {
-        val objects = graph.initialObjects
+        val objects = DGraph.initialObjects
         for (node in objects) {
             val base = base(node) ?: continue
             if (base == ".if") {
@@ -58,16 +58,16 @@ internal class CondAttributesSetter(
                 tmpNode = tmpNode.nextSibling.nextSibling
                 line = line(tmpNode)
             }
-            val igCond = IgNodeCondition(cond)
-            traverseParents(node.parentNode, igCond.freeVars)
+            val dgCond = DgNodeCondition(cond)
+            traverseParents(node.parentNode, dgCond.freeVars)
             name(node)?.let { name ->
                 if (name != "@") {
-                    graph.igNodes.add(IGraphCondNode(node, packageName(node), igCond, fstOption, sndOption))
-                    val parent = graph.igNodes.find { it.body == node.parentNode }
-                    parent?.attributes?.add(IGraphCondAttr(name, 0, node, igCond, fstOption, sndOption))
+                    DGraph.dgNodes.add(DGraphCondNode(node, packageName(node), dgCond, fstOption, sndOption))
+                    val parent = DGraph.dgNodes.find { it.body == node.parentNode }
+                    parent?.attributes?.add(DGraphCondAttr(name, 0, node, dgCond, fstOption, sndOption))
                 } else {
-                    val parent = graph.igNodes.find { it.body == node.parentNode }
-                    parent?.attributes?.add(IGraphCondAttr(name, 0, node, igCond, fstOption, sndOption))
+                    val parent = DGraph.dgNodes.find { it.body == node.parentNode }
+                    parent?.attributes?.add(DGraphCondAttr(name, 0, node, dgCond, fstOption, sndOption))
                 }
             }
         }

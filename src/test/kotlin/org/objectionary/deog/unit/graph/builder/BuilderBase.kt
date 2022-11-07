@@ -24,7 +24,7 @@
 
 package org.objectionary.deog.unit.graph.builder
 
-import org.objectionary.deog.repr.IGraphNode
+import org.objectionary.deog.repr.DGraphNode
 import org.objectionary.deog.buildGraph
 import org.objectionary.deog.documents
 import org.apache.commons.io.FileUtils
@@ -65,9 +65,9 @@ open class BuilderBase : TestBase {
         "src${sep}test${sep}resources${sep}unit${sep}out${sep}builder$sep$directoryName.txt"
 
     private fun printOut(
-        node: IGraphNode,
+        node: DGraphNode,
         out: ByteArrayOutputStream,
-        nodes: MutableSet<IGraphNode>
+        nodes: MutableSet<DGraphNode>
     ) {
         out.write("NODE: name=\"${node.name}\"\n".toByteArray())
         if (!nodes.contains(node)) {

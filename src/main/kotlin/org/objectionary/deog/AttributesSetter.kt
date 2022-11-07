@@ -24,15 +24,15 @@
 
 package org.objectionary.deog
 
-import org.objectionary.deog.repr.Graph
-import org.objectionary.deog.repr.IGraphAttr
-import org.objectionary.deog.repr.IGraphNode
+import org.objectionary.deog.repr.DGraph
+import org.objectionary.deog.repr.DGraphAttr
+import org.objectionary.deog.repr.DGraphNode
 import org.w3c.dom.Node
 
 /**
- * Sets all default attributes of nodes and propagates attributes through the [graph]
+ * Sets all default attributes of nodes and propagates attributes through the [DGraph]
  */
-internal class AttributesSetter(private val graph: Graph) {
+internal class AttributesSetter(private val DGraph: DGraph) {
     /**
      * Aggregate the process of attributes pushing
      */
@@ -45,13 +45,13 @@ internal class AttributesSetter(private val graph: Graph) {
      * Add all already existent attributes to attributes list of the node
      */
     private fun setDefaultAttributes() {
-        graph.igNodes.forEach { node ->
+        DGraph.dgNodes.forEach { node ->
             val attributes = node.body.childNodes
             for (j in 0 until attributes.length) {
                 val attr: Node = attributes.item(j)
                 abstract(attr)?.let {
                     name(attr)?.let {
-                        node.attributes.add(IGraphAttr(name(attr)!!, 0, attr))
+                        node.attributes.add(DGraphAttr(name(attr)!!, 0, attr))
                     }
                 }
             }
@@ -61,12 +61,12 @@ internal class AttributesSetter(private val graph: Graph) {
     /**
      * Push attributes from parents to children
      */
-    private fun pushAttributes(): Unit = graph.heads.forEach { dfsPush(it, null, mutableMapOf()) }
+    private fun pushAttributes(): Unit = DGraph.heads.forEach { dfsPush(it, null, mutableMapOf()) }
 
     private fun dfsPush(
-        node: IGraphNode,
-        parent: IGraphNode?,
-        visited: MutableMap<IGraphNode, Int>
+        node: DGraphNode,
+        parent: DGraphNode?,
+        visited: MutableMap<DGraphNode, Int>
     ) {
         if (visited[node] == 2) {
             return
@@ -79,7 +79,7 @@ internal class AttributesSetter(private val graph: Graph) {
         parent?.attributes?.filter { pa ->
             node.attributes.none { na -> na.name == pa.name }
         }?.forEach {
-            node.attributes.add(IGraphAttr(it.name, it.parentDistance + 1, it.body))
+            node.attributes.add(DGraphAttr(it.name, it.parentDistance + 1, it.body))
         }
         node.children.forEach { dfsPush(it, node, visited) }
     }

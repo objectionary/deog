@@ -24,20 +24,20 @@
 
 package org.objectionary.deog
 
-import org.objectionary.deog.repr.Graph
-import org.objectionary.deog.repr.IGraphAttr
-import org.objectionary.deog.repr.IGraphNode
+import org.objectionary.deog.repr.DGraph
+import org.objectionary.deog.repr.DGraphAttr
+import org.objectionary.deog.repr.DGraphNode
 import org.w3c.dom.Node
 
-typealias Abstracts = MutableMap<String, MutableSet<IGraphNode>>
+typealias Abstracts = MutableMap<String, MutableSet<DGraphNode>>
 
 /**
  * Propagates inner attributes
  */
 internal class InnerPropagator(
-    private val graph: Graph
+    private val DGraph: DGraph
 ) {
-    private val decorators: MutableMap<IGraphNode, Boolean> = mutableMapOf()
+    private val decorators: MutableMap<DGraphNode, Boolean> = mutableMapOf()
     private val abstracts: Abstracts = mutableMapOf()
 
     /**
@@ -49,14 +49,14 @@ internal class InnerPropagator(
     }
 
     private fun collectDecorators() {
-        val objects = graph.initialObjects
+        val objects = DGraph.initialObjects
         for (node in objects) {
             val name = name(node)
             if (name != null && name == "@") {
-                decorators[IGraphNode(node, packageName(node))] = false
+                decorators[DGraphNode(node, packageName(node))] = false
             }
             if (abstract(node) != null && name != null) {
-                abstracts.getOrPut(name) { mutableSetOf() }.add(IGraphNode(node, packageName(node)))
+                abstracts.getOrPut(name) { mutableSetOf() }.add(DGraphNode(node, packageName(node)))
             }
         }
     }
@@ -78,7 +78,7 @@ internal class InnerPropagator(
      * @return abstract object corresponding to the base attribute of the [key] node
      */
     @Suppress("AVOID_NULL_CHECKS")
-    private fun getBaseAbstract(key: IGraphNode) {
+    private fun getBaseAbstract(key: DGraphNode) {
         var tmpKey = key.body
         while (base(tmpKey)?.startsWith('.') == true) {
             if (tmpKey.previousSibling.previousSibling == null) {
@@ -107,7 +107,7 @@ internal class InnerPropagator(
      */
     private fun resolveRefs(node: Node): Node? {
         abstract(node)?.let { return node }
-        return findRef(node, graph.initialObjects, graph)
+        return findRef(node, DGraph.initialObjects, DGraph)
     }
 
     /**
@@ -117,12 +117,12 @@ internal class InnerPropagator(
     private fun resolveAttrs(
         node: Node,
         abstract: Node,
-        key: IGraphNode
+        key: DGraphNode
     ) {
-        var tmpAbstract = graph.igNodes.find { it.body == abstract } ?: return
+        var tmpAbstract = DGraph.dgNodes.find { it.body == abstract } ?: return
         var tmpNode: Node? = node.nextSibling.nextSibling ?: return
         while (name(tmpAbstract.body) != base(key.body)?.substring(1)) {
-            tmpAbstract = graph.igNodes.find { graphNode ->
+            tmpAbstract = DGraph.dgNodes.find { graphNode ->
                 tmpAbstract.attributes.find {
                     base(tmpNode)?.substring(1) == name(it.body)
                 }?.body == graphNode.body
@@ -130,13 +130,13 @@ internal class InnerPropagator(
             tmpNode = tmpNode?.nextSibling?.nextSibling
         }
         val parent = node.parentNode ?: return
-        graph.igNodes.find { it.body == parent } ?: run { graph.igNodes.add(IGraphNode(parent, packageName(parent))) }
-        val igParent = graph.igNodes.find { it.body == parent } ?: return
+        DGraph.dgNodes.find { it.body == parent } ?: run { DGraph.dgNodes.add(DGraphNode(parent, packageName(parent))) }
+        val dgParent = DGraph.dgNodes.find { it.body == parent } ?: return
         tmpAbstract.attributes.forEach { graphNode ->
-            igParent.attributes.find { graphNode.body == it.body }
-                ?: igParent.attributes.add(IGraphAttr(graphNode.name, graphNode.parentDistance + 1, graphNode.body))
+            dgParent.attributes.find { graphNode.body == it.body }
+                ?: dgParent.attributes.add(DGraphAttr(graphNode.name, graphNode.parentDistance + 1, graphNode.body))
         }
-        graph.connect(igParent, tmpAbstract)
+        DGraph.connect(dgParent, tmpAbstract)
         return
     }
 }
