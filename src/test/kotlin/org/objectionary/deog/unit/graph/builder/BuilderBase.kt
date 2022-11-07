@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-package org.objectionary.ddr.unit.graph.builder
+package org.objectionary.deog.unit.graph.builder
 
-import org.objectionary.ddr.TestBase
-import org.objectionary.ddr.graph.repr.IGraphNode
-import org.objectionary.ddr.launch.buildGraph
-import org.objectionary.ddr.launch.documents
+import org.objectionary.deog.repr.IGraphNode
+import org.objectionary.deog.buildGraph
+import org.objectionary.deog.documents
 import org.apache.commons.io.FileUtils
+import org.objectionary.deog.unit.graph.TestBase
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream

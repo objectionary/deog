@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package org.objectionary.ddr.unit.graph.inner
+package org.objectionary.deog.unit.graph.inner
 
 import org.junit.jupiter.api.Test
 import kotlin.test.Ignore

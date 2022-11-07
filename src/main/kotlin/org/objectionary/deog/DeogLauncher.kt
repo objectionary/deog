@@ -24,7 +24,7 @@ val documents: MutableMap<Document, String> = mutableMapOf()
  * @param path path to the directory to be analysed
  * @param dirPostfix postfix of the resulting directory
  */
-fun launch(path: String, dirPostfix: String = "ddr") {
+fun launch(path: String, dirPostfix: String = "deog") {
     documents.clear()
     val graph = buildGraph(path, false, dirPostfix)
     CondAttributesSetter(graph).processConditions()
@@ -45,7 +45,7 @@ fun launch(path: String, dirPostfix: String = "ddr") {
 internal fun buildGraph(
     path: String,
     gather: Boolean = true,
-    dirPostfix: String = "ddr"
+    dirPostfix: String = "deog"
 ): Graph {
     Files.walk(Paths.get(path))
         .filter(Files::isRegularFile)

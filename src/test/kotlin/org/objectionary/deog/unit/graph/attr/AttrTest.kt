@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package org.objectionary.ddr.unit.graph.attr
+package org.objectionary.deog.unit.graph.attr
 
 import org.junit.jupiter.api.Test
 

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package org.objectionary.ddr.unit.graph.builder
+package org.objectionary.deog.unit.graph.builder
 
 import org.junit.jupiter.api.Test
 

@@ -22,15 +22,15 @@
  * SOFTWARE.
  */
 
-package org.objectionary.ddr.unit.graph.inner
+package org.objectionary.deog.unit.graph.inner
 
-import org.objectionary.ddr.TestBase
-import org.objectionary.ddr.graph.AttributesSetter
-import org.objectionary.ddr.graph.InnerPropagator
-import org.objectionary.ddr.graph.repr.IGraphNode
-import org.objectionary.ddr.launch.buildGraph
-import org.objectionary.ddr.launch.documents
+import org.objectionary.deog.AttributesSetter
+import org.objectionary.deog.InnerPropagator
+import org.objectionary.deog.repr.IGraphNode
+import org.objectionary.deog.buildGraph
+import org.objectionary.deog.documents
 import org.apache.commons.io.FileUtils
+import org.objectionary.deog.unit.graph.TestBase
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
