@@ -24,8 +24,8 @@
 
 package org.objectionary.deog.unit.graph.builder
 
-import org.objectionary.deog.buildGraph
-import org.objectionary.deog.documents
+import org.objectionary.deog.launch.buildGraph
+import org.objectionary.deog.launch.documents
 import org.objectionary.deog.repr.DGraphNode
 import org.objectionary.deog.unit.graph.TestBase
 import org.apache.commons.io.FileUtils

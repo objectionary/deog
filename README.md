@@ -1,6 +1,6 @@
-### Inheritance graph
+### Decoration graph of EO objects
 
-Graph module takes a collection of `org.w3c.dom.Document` objects and constructs an inheritance graph, connecting all of them.
+DEOG takes a collection of `org.w3c.dom.Document` objects and constructs an inheritance graph, connecting all of them.
 With this graph you can access the list of all the attributes present in an object in constant time.
 
 #### Example:

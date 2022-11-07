@@ -24,9 +24,9 @@
 
 package org.objectionary.deog.unit.graph.attr
 
-import org.objectionary.deog.AttributesSetter
-import org.objectionary.deog.buildGraph
-import org.objectionary.deog.documents
+import org.objectionary.deog.steps.AttributesSetter
+import org.objectionary.deog.launch.buildGraph
+import org.objectionary.deog.launch.documents
 import org.objectionary.deog.repr.DGraphNode
 import org.objectionary.deog.unit.graph.TestBase
 import org.apache.commons.io.FileUtils

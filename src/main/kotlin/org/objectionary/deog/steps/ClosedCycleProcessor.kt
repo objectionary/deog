@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package org.objectionary.deog
+package org.objectionary.deog.steps
 
 import org.objectionary.deog.repr.DGraphNode
 import org.objectionary.deog.repr.DeogGraph

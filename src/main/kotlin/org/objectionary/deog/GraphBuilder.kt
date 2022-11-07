@@ -26,6 +26,7 @@ package org.objectionary.deog
 
 import org.objectionary.deog.repr.DGraphNode
 import org.objectionary.deog.repr.DeogGraph
+import org.objectionary.deog.steps.processClosedCycles
 import org.slf4j.LoggerFactory
 import org.w3c.dom.Document
 import org.w3c.dom.Node
