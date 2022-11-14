@@ -23,65 +23,65 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-<modelVersion>4.0.0</modelVersion>
-<parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
     <version>0.63.2</version>
-</parent>
-<artifactId>deog</artifactId>
-<groupId>org.eolang</groupId>
-<version>1.0-SNAPSHOT</version>
-<packaging>jar</packaging>
-<name>deog</name>
-<description>Experimental Dynamic Dispatch Removal Toolkit for EO Programs</description>
-<url>https://github.com/objectionary/deog</url>
-<inceptionYear>2022</inceptionYear>
-<organization>
+  </parent>
+  <artifactId>deog</artifactId>
+  <groupId>org.eolang</groupId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>deog</name>
+  <description>Experimental Dynamic Dispatch Removal Toolkit for EO Programs</description>
+  <url>https://github.com/objectionary/deog</url>
+  <inceptionYear>2022</inceptionYear>
+  <organization>
     <name>objectionary</name>
     <url>https://github.com/objectionary/deog</url>
-</organization>
-<licenses>
+  </organization>
+  <licenses>
     <license>
-        <name>MIT</name>
-        <url>https://www.eolang.org/LICENSE.txt</url>
-        <distribution>site</distribution>
+      <name>MIT</name>
+      <url>https://www.eolang.org/LICENSE.txt</url>
+      <distribution>site</distribution>
     </license>
-</licenses>
-<developers>
+  </licenses>
+  <developers>
     <developer>
-        <id>1</id>
-        <name>Olesia Subbotina</name>
-        <email>lesya.sub@mail.ru</email>
-        <organization>yegor256.com</organization>
-        <organizationUrl>https://www.yegor256.com</organizationUrl>
-        <roles>
-            <role>Architect</role>
-            <role>Developer</role>
-        </roles>
-        <timezone>+3</timezone>
+      <id>1</id>
+      <name>Olesia Subbotina</name>
+      <email>lesya.sub@mail.ru</email>
+      <organization>yegor256.com</organization>
+      <organizationUrl>https://www.yegor256.com</organizationUrl>
+      <roles>
+        <role>Architect</role>
+        <role>Developer</role>
+      </roles>
+      <timezone>+3</timezone>
     </developer>
-</developers>
-<issueManagement>
+  </developers>
+  <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/objectionary/deog/issues</url>
-</issueManagement>
-<scm>
+  </issueManagement>
+  <scm>
     <connection>scm:git:git@github.com:objectionary/deog.git</connection>
     <developerConnection>scm:git:git@github.com:objectionary/deog.git</developerConnection>
     <url>https://github.com/objectionary/deog</url>
-</scm>
-<ciManagement>
+  </scm>
+  <ciManagement>
     <system>rultor</system>
     <url>https://www.rultor.com/s/deog</url>
-</ciManagement>
-<distributionManagement>
+  </ciManagement>
+  <distributionManagement>
     <site>
-        <id>github-pages</id>
-        <url>https://github.com/objectionary/deog</url>
+      <id>github-pages</id>
+      <url>https://github.com/objectionary/deog</url>
     </site>
-</distributionManagement>
-<properties>
+  </distributionManagement>
+  <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>17</java.version>
     <kotlin.code.style>official</kotlin.code.style>
@@ -90,249 +90,249 @@ SOFTWARE.
     <maven.compiler.target>17</maven.compiler.target>
     <diktat-check.version>1.2.3</diktat-check.version>
     <dokka.version>1.7.20</dokka.version>
-</properties>
-<repositories>
+  </properties>
+  <repositories>
     <repository>
-        <id>mavenCentral</id>
-        <url>https://repo1.maven.org/maven2/</url>
+      <id>mavenCentral</id>
+      <url>https://repo1.maven.org/maven2/</url>
     </repository>
     <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
     </repository>
-</repositories>
-<build>
+  </repositories>
+  <build>
     <sourceDirectory>src/main/kotlin</sourceDirectory>
     <testSourceDirectory>src/test/kotlin</testSourceDirectory>
     <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>3.4.1</version>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.4.1</version>
+        <configuration>
+          <sourceFileIncludes>
+            <include>Dummy.java</include>
+          </sourceFileIncludes>
+          <sourcepath>src/main/java/org/objectionary/deog</sourcepath>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.13</version>
+        <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+        <version>${kotlin.version}</version>
+        <executions>
+          <execution>
+            <id>compile</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>test-compile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>test-compile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <nowarn>true</nowarn>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.22.2</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.22.2</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <mainClass>MainKt</mainClass>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>org.objectionary.deog.launch.MainKt</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.cqfn.diktat</groupId>
+        <artifactId>diktat-maven-plugin</artifactId>
+        <version>${diktat-check.version}</version>
+        <executions>
+          <execution>
+            <id>diktat</id>
+            <phase>none</phase>
+            <goals>
+              <goal>check</goal>
+              <goal>fix</goal>
+            </goals>
             <configuration>
-                <sourceFileIncludes>
-                    <include>Dummy.java</include>
-                </sourceFileIncludes>
-                <sourcepath>src/main/java/org/objectionary/deog</sourcepath>
+              <inputs>
+                <input>${project.basedir}/src/main/kotlin</input>
+                <input>${project.basedir}/src/test/kotlin</input>
+              </inputs>
+              <excludes>
+                <exclude>${project.basedir}/src/main/kotlin/generated</exclude>
+              </excludes>
+              <diktatConfigFile>diktat-analysis.yml</diktatConfigFile>
             </configuration>
-        </plugin>
-        <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.6.13</version>
-            <extensions>true</extensions>
-        </plugin>
-        <plugin>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-maven-plugin</artifactId>
-            <version>${kotlin.version}</version>
-            <executions>
-                <execution>
-                    <id>compile</id>
-                    <phase>process-sources</phase>
-                    <goals>
-                        <goal>compile</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>test-compile</id>
-                    <phase>test-compile</phase>
-                    <goals>
-                        <goal>test-compile</goal>
-                    </goals>
-                </execution>
-            </executions>
-            <configuration>
-                <nowarn>true</nowarn>
-            </configuration>
-        </plugin>
-        <plugin>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.22.2</version>
-        </plugin>
-        <plugin>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <version>2.22.2</version>
-        </plugin>
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>3.1.0</version>
-            <configuration>
-                <mainClass>MainKt</mainClass>
-            </configuration>
-        </plugin>
-        <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <configuration>
-                <archive>
-                    <manifest>
-                        <mainClass>org.objectionary.deog.launch.MainKt</mainClass>
-                    </manifest>
-                </archive>
-                <descriptorRefs>
-                    <descriptorRef>jar-with-dependencies</descriptorRef>
-                </descriptorRefs>
-            </configuration>
-            <executions>
-                <execution>
-                    <id>make-assembly</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>single</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-        <plugin>
-            <groupId>org.cqfn.diktat</groupId>
-            <artifactId>diktat-maven-plugin</artifactId>
-            <version>${diktat-check.version}</version>
-            <executions>
-                <execution>
-                    <id>diktat</id>
-                    <phase>none</phase>
-                    <goals>
-                        <goal>check</goal>
-                        <goal>fix</goal>
-                    </goals>
-                    <configuration>
-                        <inputs>
-                            <input>${project.basedir}/src/main/kotlin</input>
-                            <input>${project.basedir}/src/test/kotlin</input>
-                        </inputs>
-                        <excludes>
-                            <exclude>${project.basedir}/src/main/kotlin/generated</exclude>
-                        </excludes>
-                        <diktatConfigFile>diktat-analysis.yml</diktatConfigFile>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
-        <plugin>
-            <groupId>org.jetbrains.dokka</groupId>
-            <artifactId>dokka-maven-plugin</artifactId>
-            <version>${dokka.version}</version>
-            <executions>
-                <execution>
-                    <phase>pre-site</phase>
-                    <goals>
-                        <goal>dokka</goal>
-                    </goals>
-                </execution>
-            </executions>
-            <configuration>
-                <sourceLinks>
-                    <link>
-                        <path>${project.basedir}</path>
-                        <url>https://github.com/objectionary/deog</url>
-                        <lineSuffix>#L</lineSuffix>
-                    </link>
-                </sourceLinks>
-            </configuration>
-        </plugin>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jetbrains.dokka</groupId>
+        <artifactId>dokka-maven-plugin</artifactId>
+        <version>${dokka.version}</version>
+        <executions>
+          <execution>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>dokka</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sourceLinks>
+            <link>
+              <path>${project.basedir}</path>
+              <url>https://github.com/objectionary/deog</url>
+              <lineSuffix>#L</lineSuffix>
+            </link>
+          </sourceLinks>
+        </configuration>
+      </plugin>
     </plugins>
-</build>
-<dependencies>
+  </build>
+  <dependencies>
     <dependency>
-        <groupId>com.jcabi</groupId>
-        <artifactId>jcabi-xml</artifactId>
-        <version>0.25.5</version>
-        <exclusions>
-            <exclusion>
-                <groupId>org.slf4j</groupId>
-                <artifactId>*</artifactId>
-            </exclusion>
-        </exclusions>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-xml</artifactId>
+      <version>0.25.5</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
-        <groupId>com.yegor256</groupId>
-        <artifactId>xsline</artifactId>
-        <version>0.13.0</version>
+      <groupId>com.yegor256</groupId>
+      <artifactId>xsline</artifactId>
+      <version>0.13.0</version>
     </dependency>
     <dependency>
-        <groupId>xml-apis</groupId>
-        <artifactId>xml-apis</artifactId>
-        <version>1.4.01</version>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>1.4.01</version>
     </dependency>
     <dependency>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-stdlib</artifactId>
-        <version>${kotlin.version}</version>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>${kotlin.version}</version>
     </dependency>
     <dependency>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-test</artifactId>
-        <version>${kotlin.version}</version>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-test</artifactId>
+      <version>${kotlin.version}</version>
     </dependency>
     <dependency>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-test-junit5</artifactId>
-        <version>1.7.20</version>
-        <scope>test</scope>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-test-junit5</artifactId>
+      <version>1.7.20</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>5.9.1</version>
-        <scope>test</scope>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.9.1</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
-        <version>5.9.1</version>
-        <scope>test</scope>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.9.1</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.jetbrains</groupId>
-        <artifactId>annotations</artifactId>
-        <version>23.0.0</version>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>23.0.0</version>
     </dependency>
     <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>2.0.3</version>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.3</version>
     </dependency>
     <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>1.4.4</version>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.4.4</version>
     </dependency>
     <dependency>
-        <groupId>org.eolang</groupId>
-        <artifactId>eo-parser</artifactId>
-        <version>0.28.10</version>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-parser</artifactId>
+      <version>0.28.10</version>
     </dependency>
     <dependency>
-        <groupId>org.eolang</groupId>
-        <artifactId>eo-maven-plugin</artifactId>
-        <version>0.28.10</version>
-        <scope>provided</scope>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-maven-plugin</artifactId>
+      <version>0.28.10</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>2.11.0</version>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.11.0</version>
     </dependency>
-</dependencies>
-<profiles>
+  </dependencies>
+  <profiles>
     <profile>
-        <id>qulice</id>
-        <build>
-            <plugins>
-                <plugin>
-                    <groupId>com.qulice</groupId>
-                    <artifactId>qulice-maven-plugin</artifactId>
-                    <version>0.22.0</version>
-                    <configuration>
-                        <excludes combine.children="append">
-                            <exclude>duplicatefinder:.*</exclude>
-                            <exclude>dependencies:ch.qos.logback</exclude>
-                        </excludes>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </build>
+      <id>qulice</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.qulice</groupId>
+            <artifactId>qulice-maven-plugin</artifactId>
+            <version>0.22.0</version>
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>duplicatefinder:.*</exclude>
+                <exclude>dependencies:ch.qos.logback</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
-</profiles>
+  </profiles>
 </project>

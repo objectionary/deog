@@ -33,13 +33,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.cactoos:cactoos:0.54.0" level="project" />
     <orderEntry type="library" name="Maven: com.jcabi:jcabi-xml:0.25.5" level="project" />
     <orderEntry type="library" name="Maven: com.jcabi:jcabi-log:0.22.0" level="project" />
     <orderEntry type="library" name="Maven: org.mockito:mockito-core:4.8.0" level="project" />
     <orderEntry type="library" name="Maven: net.bytebuddy:byte-buddy:1.12.14" level="project" />
     <orderEntry type="library" name="Maven: net.bytebuddy:byte-buddy-agent:1.12.14" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.objenesis:objenesis:3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.cactoos:cactoos:0.54.0" level="project" />
     <orderEntry type="library" name="Maven: com.yegor256:xsline:0.13.0" level="project" />
     <orderEntry type="library" name="Maven: xml-apis:xml-apis:1.4.01" level="project" />
     <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-stdlib:1.7.20" level="project" />
