@@ -94,6 +94,14 @@ fun packageName(node: Node?): String {
 }
 
 /**
+ * Finds atom attribute of the [node]
+ *
+ * @param node to be analysed
+ * @return found atom name
+ */
+fun atom(node: Node?) = node?.attributes?.getNamedItem("atom")?.textContent
+
+/**
  * Either finds an abstract object that the [node] is referring to or looks for the abstract node in the packages
  *
  * @param node node to be handled
