@@ -27,6 +27,7 @@ val documents: MutableMap<Document, String> = mutableMapOf()
  *
  * @param path path to the directory to be analysed
  * @param dirPostfix postfix of the resulting directory, which will be created after the analysis
+ * @return built graph
  */
 fun launchDeog(path: String, dirPostfix: String = "deog"): DeogGraph {
     documents.clear()
