@@ -27,8 +27,9 @@ val documents: MutableMap<Document, String> = mutableMapOf()
  *
  * @param path path to the directory to be analysed
  * @param dirPostfix postfix of the resulting directory, which will be created after the analysis
+ * @return built graph
  */
-fun launch(path: String, dirPostfix: String = "deog") {
+fun launchDeog(path: String, dirPostfix: String = "deog"): DeogGraph {
     documents.clear()
     val graph = buildGraph(path, false, dirPostfix)
     CondAttributesSetter(graph).processConditions()
@@ -36,6 +37,7 @@ fun launch(path: String, dirPostfix: String = "deog") {
     attributesSetter.setAttributes()
     val innerPropagator = InnerPropagator(graph)
     innerPropagator.propagateInnerAttrs()
+    return graph
 }
 
 /**

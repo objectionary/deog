@@ -59,3 +59,14 @@ Nodes are represented by `DGraphNode` object with parameters such as
 * `body` - corresponding `org.w3c.dom.Node`
 
 `AttributesUtil` file provides a useful API for getting attributes of `org.w3c.dom.Node` objects.
+
+### Usage with maven
+
+Just add this to your pom.xml file
+```
+<dependency>
+  <groupId>org.eolang</groupId>
+  <artifactId>deog</artifactId>
+  <version>0.0.3</version>
+</dependency>
+```
