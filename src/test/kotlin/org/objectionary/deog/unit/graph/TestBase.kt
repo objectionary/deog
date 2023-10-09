@@ -29,6 +29,8 @@ import kotlin.test.assertEquals
 
 /**
  * Common interface for all test classes
+ *
+ * @todo #29:90m/DEV Integration tests needs to be added
  */
 interface TestBase {
     /**
