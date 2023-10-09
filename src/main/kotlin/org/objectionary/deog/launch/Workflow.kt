@@ -1,11 +1,11 @@
 package org.objectionary.deog.launch
 
-import org.objectionary.deog.steps.AttributesSetter
-import org.objectionary.deog.steps.CondAttributesSetter
-import org.objectionary.deog.steps.InnerPropagator
 import org.objectionary.deog.GraphBuilder
 import org.objectionary.deog.sources.SrsTransformed
 import org.objectionary.deog.sources.XslTransformer
+import org.objectionary.deog.steps.AttributesSetter
+import org.objectionary.deog.steps.CondAttributesSetter
+import org.objectionary.deog.steps.InnerPropagator
 import org.w3c.dom.Document
 import java.nio.file.Path
 

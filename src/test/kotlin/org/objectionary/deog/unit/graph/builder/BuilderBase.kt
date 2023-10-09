@@ -24,15 +24,17 @@
 
 package org.objectionary.deog.unit.graph.builder
 
-import org.objectionary.deog.launch.buildGraph
-import org.objectionary.deog.launch.documents
+import org.objectionary.deog.GraphBuilder
 import org.objectionary.deog.repr.DGraphNode
+import org.objectionary.deog.sources.SrsTransformed
+import org.objectionary.deog.sources.XslTransformer
 import org.objectionary.deog.unit.graph.TestBase
 import org.apache.commons.io.FileUtils
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.nio.file.Path
 import java.nio.file.Paths
 
 /**
@@ -43,8 +45,8 @@ open class BuilderBase : TestBase {
 
     override fun doTest() {
         val path = getTestName()
-        documents.clear()
-        val graph = buildGraph(constructInPath(path))
+        val sources = SrsTransformed(Path.of(constructInPath(path)), XslTransformer(), "tmp")
+        val graph = GraphBuilder(sources.walk()).createGraph()
         val out = ByteArrayOutputStream()
         graph.heads.sortedBy { it.name }.forEach { printOut(it, out, mutableSetOf()) }
         val actual = String(out.toByteArray())

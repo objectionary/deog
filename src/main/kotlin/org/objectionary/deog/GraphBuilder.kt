@@ -52,6 +52,8 @@ class GraphBuilder(private val documents: MutableMap<Document, Path>) {
     /**
      * Aggregates the process of graph creation:
      * Constructs inheritance graph, sets heads and leaves and processes cycles
+     *
+     * @return created graph
      */
     fun createGraph(): DeogGraph {
         try {

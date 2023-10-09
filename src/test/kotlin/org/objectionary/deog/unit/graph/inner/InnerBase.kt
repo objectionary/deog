@@ -24,9 +24,10 @@
 
 package org.objectionary.deog.unit.graph.inner
 
-import org.objectionary.deog.launch.buildGraph
-import org.objectionary.deog.launch.documents
+import org.objectionary.deog.GraphBuilder
 import org.objectionary.deog.repr.DGraphNode
+import org.objectionary.deog.sources.SrsTransformed
+import org.objectionary.deog.sources.XslTransformer
 import org.objectionary.deog.steps.AttributesSetter
 import org.objectionary.deog.steps.InnerPropagator
 import org.objectionary.deog.unit.graph.TestBase
@@ -35,6 +36,7 @@ import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.nio.file.Path
 import java.nio.file.Paths
 
 /**
@@ -45,8 +47,8 @@ open class InnerBase : TestBase {
 
     override fun doTest() {
         val path = getTestName()
-        documents.clear()
-        val graph = buildGraph(constructInPath(path))
+        val sources = SrsTransformed(Path.of(constructInPath(path)), XslTransformer(), "tmp")
+        val graph = GraphBuilder(sources.walk()).createGraph()
         val attributesSetter = AttributesSetter(graph)
         attributesSetter.setAttributes()
         val innerPropagator = InnerPropagator(graph)
