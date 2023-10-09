@@ -30,13 +30,17 @@ import org.objectionary.deog.steps.processClosedCycles
 import org.slf4j.LoggerFactory
 import org.w3c.dom.Document
 import org.w3c.dom.Node
+import java.nio.file.Path
 
 typealias GraphAbstracts = MutableMap<String, MutableSet<Node>>
 
 /**
  * Builds decoration hierarchy graph
+ *
+ * @todo #29:30m/DEV Refactor this class. Current version of GraphBuilder from ddr repository looks nicer.
+ * It need to be simple copy-pasted with some fixes.
  */
-class GraphBuilder(private val documents: MutableMap<Document, String>) {
+class GraphBuilder(private val documents: MutableMap<Document, Path>) {
     private val logger = LoggerFactory.getLogger(this.javaClass.name)
     private val abstracts: GraphAbstracts = mutableMapOf()
 
@@ -49,7 +53,7 @@ class GraphBuilder(private val documents: MutableMap<Document, String>) {
      * Aggregates the process of graph creation:
      * Constructs inheritance graph, sets heads and leaves and processes cycles
      */
-    fun createGraph() {
+    fun createGraph(): DeogGraph {
         try {
             constructInheritance()
             setLeaves()
@@ -68,6 +72,7 @@ class GraphBuilder(private val documents: MutableMap<Document, String>) {
         } catch (e: Exception) {
             logger.error(e.printStackTrace().toString())
         }
+        return deogGraph
     }
     @Suppress("PARAMETER_NAME_IN_OUTER_LAMBDA")
     private fun abstracts(objects: MutableList<Node>, packageName: String) =

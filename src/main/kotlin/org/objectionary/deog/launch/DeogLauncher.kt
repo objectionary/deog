@@ -15,12 +15,13 @@ import org.w3c.dom.Document
 import java.io.File
 import java.io.FileInputStream
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import javax.xml.parsers.DocumentBuilderFactory
 
 private val logger = LoggerFactory.getLogger("org.objectionary.deog.launch.DeogLauncher")
 private val sep = File.separatorChar
-val documents: MutableMap<Document, String> = mutableMapOf()
+val documents: MutableMap<Document, Path> = mutableMapOf()
 
 /**
  * Aggregates all steps of analysis
@@ -58,7 +59,7 @@ internal fun buildGraph(
         .forEach {
             val tmpPath = createTempDirectories(path, it.toString(), gather, dirPostfix)
             transformXml(it.toString(), tmpPath)
-            documents[getDocument(tmpPath)!!] = tmpPath
+            documents[getDocument(tmpPath)!!] = Path.of(tmpPath)
         }
     val builder = GraphBuilder(documents)
     builder.createGraph()
