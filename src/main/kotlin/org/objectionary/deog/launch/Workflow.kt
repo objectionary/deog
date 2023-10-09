@@ -46,9 +46,9 @@ abstract class XmirAnalysisWorkflow(val documents: MutableMap<Document, Path>) :
 
 /**
  * Stores all the information from xmir files in the form of a graph. Launches analysis and transformation steps for
- * the Dynamic Dispatch Removal on this graph.
+ * building Decoration Graph of given EO programs
  */
-class DdrWorkflow : XmirAnalysisWorkflow {
+class DeogWorkflow : XmirAnalysisWorkflow {
     /**
      * Constructs workflow class using documents
      *
@@ -62,10 +62,10 @@ class DdrWorkflow : XmirAnalysisWorkflow {
      * @param path path to the directory to be analysed
      * @param postfix postfix of the resulting directory
      */
-    constructor(path: String, postfix: String = "ddr") : super(path, postfix)
+    constructor(path: String, postfix: String = "deog") : super(path, postfix)
 
     /**
-     * Aggregates all steps of Dynamic Dispatch Removal
+     * Aggregates all steps of building Decoration Graph
      */
     override fun launch() {
         CondAttributesSetter(graph).processConditions()
