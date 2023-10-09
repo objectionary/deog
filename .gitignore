@@ -1,10 +1,6 @@
 .idea
-consoleApp.iml
+*.iml
 target
-src/main/resources/sample_in
-src/main/resources/sample_out
-src/main/resources/tmp_out
 tmp*
 *TMP
 *eo_outputs
-src/test/resources/integration/xmirs
