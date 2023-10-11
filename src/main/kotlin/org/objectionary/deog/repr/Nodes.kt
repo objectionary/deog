@@ -49,8 +49,8 @@ open class DGraphNode(
  * @property fstOption list of nodes representing the option on the true branch
  * @property sndOption list of nodes representing the option on the false branch
  *
- * @todo #64:30min gather cond, fstOption and sndOption into the existing
- *  IgNodeCondition structure and refactor its usages
+ * @todo #64:30min Some refactoring required for this class: gather cond, fstOption and sndOption arguments into
+ * the existing IgNodeCondition structure and refactor its usages.
  */
 @Suppress("CLASS_NAME_INCORRECT")
 class DGraphCondNode(

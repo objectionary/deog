@@ -1,0 +1,9 @@
+errors:
+  - korostinskii.r@phystech.edu
+alerts:
+  github:
+    - c71n93
+
+tags:
+  - pdd
+  - bug
