@@ -30,7 +30,8 @@ import kotlin.test.assertEquals
 /**
  * Common interface for all test classes
  *
- * @todo #29:90m/DEV Integration tests needs to be added
+ * @todo #29:90m/DEV Integration tests needs to be added. It is necessary to come up with the output format of the
+ * entire program
  */
 interface TestBase {
     /**
