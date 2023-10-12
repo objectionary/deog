@@ -1,6 +1,7 @@
 .idea
 *.iml
 target
-tmp*
+*_deog
+*tmp
 *TMP
 *eo_outputs

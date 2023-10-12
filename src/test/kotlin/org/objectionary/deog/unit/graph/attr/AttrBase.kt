@@ -43,10 +43,11 @@ import java.nio.file.Paths
  */
 open class AttrBase : TestBase {
     private val logger = LoggerFactory.getLogger(this.javaClass.name)
+    private var postfix = "tmp"
 
     override fun doTest() {
         val path = getTestName()
-        val sources = SrsTransformed(Path.of(constructInPath(path)), XslTransformer(), "tmp")
+        val sources = SrsTransformed(Path.of(constructInPath(path)), XslTransformer(), postfix)
         val graph = GraphBuilder(sources.walk()).createGraph()
         val attributesSetter = AttributesSetter(graph)
         attributesSetter.setAttributes()
@@ -59,7 +60,7 @@ open class AttrBase : TestBase {
         checkOutput(expected, actual)
         try {
             val tmpDir =
-                Paths.get("${constructInPath(path).replace('/', sep).substringBeforeLast(sep)}${sep}TMP").toString()
+                Paths.get("${constructInPath(path)}_$postfix").toString()
             FileUtils.deleteDirectory(File(tmpDir))
         } catch (e: Exception) {
             logger.error(e.printStackTrace().toString())

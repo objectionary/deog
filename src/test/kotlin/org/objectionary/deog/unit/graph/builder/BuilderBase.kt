@@ -42,10 +42,11 @@ import java.nio.file.Paths
  */
 open class BuilderBase : TestBase {
     private val logger = LoggerFactory.getLogger(this.javaClass.name)
+    private val postfix = "tmp"
 
     override fun doTest() {
         val path = getTestName()
-        val sources = SrsTransformed(Path.of(constructInPath(path)), XslTransformer(), "tmp")
+        val sources = SrsTransformed(Path.of(constructInPath(path)), XslTransformer(), postfix)
         val graph = GraphBuilder(sources.walk()).createGraph()
         val out = ByteArrayOutputStream()
         graph.heads.sortedBy { it.name }.forEach { printOut(it, out, mutableSetOf()) }
@@ -56,7 +57,7 @@ open class BuilderBase : TestBase {
         checkOutput(expected, actual)
         try {
             val tmpDir =
-                Paths.get("${constructInPath(path).replace('/', sep).substringBeforeLast(sep)}${sep}TMP").toString()
+                Paths.get("${constructInPath(path)}_$postfix").toString()
             FileUtils.deleteDirectory(File(tmpDir))
         } catch (e: Exception) {
             logger.error(e.printStackTrace().toString())
