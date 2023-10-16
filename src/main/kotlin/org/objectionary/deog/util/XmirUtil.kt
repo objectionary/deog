@@ -22,68 +22,45 @@
  * SOFTWARE.
  */
 
-package org.objectionary.deog
+package org.objectionary.deog.util
 
-import org.objectionary.deog.repr.DGraphNode
-import org.objectionary.deog.repr.DeogGraph
+import org.objectionary.deog.graph.repr.DGraphNode
+import org.objectionary.deog.graph.repr.DeogGraph
+import org.w3c.dom.Document
 import org.w3c.dom.Node
+import org.w3c.dom.NodeList
 
 /**
- * Finds abstract attribute of the [node]
+ * Finds attribute of this node by [name]
  *
- * @param node to be analysed
- * @return found abstract name
+ * @param [name] name of attribute to find
+ * @return found attribute
  */
-fun abstract(node: Node?) = node?.attributes?.getNamedItem("abstract")
+fun Node?.getAttr(name: String) = this?.attributes?.getNamedItem(name)?.textContent
 
 /**
- * Finds name attribute of the [node]
+ * Finds attribute of this node by [name]
  *
- * @param node to be analysed
- * @return found name
+ * @param [name] name of attribute to find
+ * @return content of found attribute
  */
-fun name(node: Node?) = node?.attributes?.getNamedItem("name")?.textContent
+fun Node?.getAttrContent(name: String) = this?.attributes?.getNamedItem(name)?.textContent
 
 /**
- * Finds base attribute of the [node]
+ * Finds out whether this node contains named attribute
  *
- * @param node to be analysed
- * @return found base
+ * @param [name] name of attribute to find
+ * @return `true` if this node contains an attribute named [name] and, `false` if it doesn't
  */
-fun base(node: Node?) = node?.attributes?.getNamedItem("base")?.textContent
+fun Node?.containsAttr(name: String) = this?.getAttr(name) != null
 
 /**
- * Finds ref attribute of the [node]
+ * Finds package name of the xmir file that contains this node
  *
- * @param node to be analysed
- * @return found ref
- */
-fun ref(node: Node?) = node?.attributes?.getNamedItem("ref")?.textContent
-
-/**
- * Finds line attribute of the [node]
- *
- * @param node to be analysed
- * @return found line
- */
-fun line(node: Node?) = node?.attributes?.getNamedItem("line")?.textContent
-
-/**
- * Finds pos attribute of the [node]
- *
- * @param node to be analysed
- * @return found pos
- */
-fun pos(node: Node?) = node?.attributes?.getNamedItem("pos")?.textContent
-
-/**
- * Finds package name of the [node]
- *
- * @param node to be analysed
  * @return found package name
  */
-fun packageName(node: Node?): String {
-    val heads = node?.ownerDocument?.getElementsByTagName("head") ?: return ""
+fun Node?.packageName(): String {
+    val heads = this?.ownerDocument?.getElementsByTagName("head") ?: return ""
     for (i in 0 until heads.length) {
         val head = heads.item(i)
         if (head.textContent.equals("package")) {
@@ -94,39 +71,60 @@ fun packageName(node: Node?): String {
 }
 
 /**
- * Finds atom attribute of the [node]
+ * Finds package name of this xmir file
  *
- * @param node to be analysed
- * @return found atom name
+ * @return found package name
  */
-fun atom(node: Node?) = node?.attributes?.getNamedItem("atom")?.textContent
+fun Document?.packageName(): String {
+    val heads = this?.getElementsByTagName("head") ?: return ""
+    for (i in 0 until heads.length) {
+        val head = heads.item(i)
+        if (head.textContent.equals("package")) {
+            return head.nextSibling.nextSibling.textContent
+        }
+    }
+    return ""
+}
+
+/**
+ * Converts `NodeList` to `MutableList<Node>` of nodes
+ *
+ * @return `MutableList<Node>` of nodes
+ */
+fun NodeList.toMutableList(): MutableList<Node> {
+    val mutList: MutableList<Node> = mutableListOf()
+    for (i in 0 until this.length) {
+        mutList.add(this.item(i)!!)
+    }
+    return mutList
+}
 
 /**
  * Either finds an abstract object that the [node] is referring to or looks for the abstract node in the packages
  *
  * @param node node to be handled
  * @param objects list of xml objects
- * @param deogGraph graph
+ * @param graph graph
  * @return node found through refs
  */
 @Suppress("AVOID_NULL_CHECKS")
 fun findRef(
     node: Node?,
     objects: MutableSet<Node>,
-    deogGraph: DeogGraph
+    graph: DeogGraph
 ): Node? {
-    val ref = ref(node) ?: return getAbstractViaPackage(base(node), deogGraph)?.body
+    val ref = node.getAttrContent("ref") ?: return getAbstractViaPackage(node.getAttrContent("base"), graph)?.body
     objects.forEach {
-        if (line(it) == ref) {
-            if (abstract(it) != null && packageName(node) == packageName(it)) {
+        if (it.getAttrContent("line") == ref) {
+            if (it.containsAttr("abstract") && node.packageName() == it.packageName()) {
                 return it
             }
-            if (abstract(it) == null && packageName(node) == packageName(it)) {
+            if (!it.containsAttr("abstract") && node.packageName() == it.packageName()) {
                 val traversed = walkDotChain(it)
                 return if (traversed == null) {
-                    findRef(it, objects, deogGraph)
+                    findRef(it, objects, graph)
                 } else {
-                    findRef(traversed, objects, deogGraph)
+                    findRef(traversed, objects, graph)
                 }
             }
         }
@@ -138,7 +136,7 @@ private fun walkDotChain(
     node: Node
 ): Node? {
     var sibling = node.nextSibling?.nextSibling
-    while (base(sibling)?.startsWith(".") == true) {
+    while (sibling.getAttrContent("base")?.startsWith(".") == true) {
         sibling = sibling?.nextSibling
         sibling?.attributes ?: run { sibling = sibling?.nextSibling }
     }
@@ -147,8 +145,8 @@ private fun walkDotChain(
     return sibling
 }
 
-private fun getAbstractViaPackage(baseNodeName: String?, deogGraph: DeogGraph): DGraphNode? {
+private fun getAbstractViaPackage(baseNodeName: String?, graph: DeogGraph): DGraphNode? {
     val packageName = baseNodeName?.substringBeforeLast('.')
     val nodeName = baseNodeName?.substringAfterLast('.')
-    return deogGraph.dgNodes.find { it.name.equals(nodeName) && it.packageName == packageName }
+    return graph.dgNodes.find { it.name.equals(nodeName) && it.packageName == packageName }
 }

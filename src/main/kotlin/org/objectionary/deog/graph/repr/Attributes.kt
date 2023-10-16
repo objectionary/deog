@@ -1,4 +1,4 @@
-package org.objectionary.deog.repr
+package org.objectionary.deog.graph.repr
 
 import org.w3c.dom.Node
 
@@ -16,7 +16,7 @@ open class DGraphAttr(
     open val body: Node
 ) {
     /**
-     * Todo
+     * @property freeVars
      */
     val freeVars: MutableSet<String> = mutableSetOf()
 }

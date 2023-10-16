@@ -1,14 +1,13 @@
 package org.objectionary.deog.steps
 
-import org.objectionary.deog.abstract
-import org.objectionary.deog.base
-import org.objectionary.deog.line
-import org.objectionary.deog.name
-import org.objectionary.deog.packageName
-import org.objectionary.deog.repr.DGraphCondAttr
-import org.objectionary.deog.repr.DGraphCondNode
-import org.objectionary.deog.repr.DeogGraph
-import org.objectionary.deog.repr.DgNodeCondition
+import org.objectionary.deog.graph.repr.DGraphCondAttr
+import org.objectionary.deog.graph.repr.DGraphCondNode
+import org.objectionary.deog.graph.repr.DeogGraph
+import org.objectionary.deog.graph.repr.DgNodeCondition
+import org.objectionary.deog.util.containsAttr
+import org.objectionary.deog.util.getAttr
+import org.objectionary.deog.util.getAttrContent
+import org.objectionary.deog.util.packageName
 import org.w3c.dom.Node
 
 /**
@@ -16,7 +15,7 @@ import org.w3c.dom.Node
  *
  * @property deogGraph graph of the program
  */
-internal class CondAttributesSetter(
+class CondAttributesSetter(
     private val deogGraph: DeogGraph
 ) {
     private val conditions: MutableSet<Node> = mutableSetOf()
@@ -32,7 +31,7 @@ internal class CondAttributesSetter(
     private fun collectConditions() {
         val objects = deogGraph.initialObjects
         for (node in objects) {
-            val base = base(node) ?: continue
+            val base = node.getAttrContent("base") ?: continue
             if (base == ".if") {
                 conditions.add(node)
             }
@@ -42,47 +41,47 @@ internal class CondAttributesSetter(
     private fun processApplications() {
         conditions.forEach { node ->
             var tmpNode = node.firstChild.nextSibling
-            var line = line(tmpNode)
+            var line = tmpNode.getAttrContent("line")
             val cond: MutableList<Node> = mutableListOf(tmpNode)
-            while (line(tmpNode.nextSibling.nextSibling) == line) {
+            while (tmpNode.nextSibling.nextSibling.getAttrContent("line") == line) {
                 cond.add(tmpNode.nextSibling.nextSibling)
                 tmpNode = tmpNode.nextSibling.nextSibling
-                line = line(tmpNode)
+                line = tmpNode.getAttrContent("line")
             }
             tmpNode = tmpNode.nextSibling.nextSibling
             val fstOption: MutableList<Node> = mutableListOf(tmpNode)
-            while (line(tmpNode.nextSibling.nextSibling) == line) {
+            while (tmpNode.nextSibling.nextSibling.getAttrContent("line") == line) {
                 fstOption.add(tmpNode.nextSibling.nextSibling)
                 tmpNode = tmpNode.nextSibling.nextSibling
-                line = line(tmpNode)
+                line = tmpNode.getAttrContent("line")
             }
             tmpNode = tmpNode.nextSibling.nextSibling
             val sndOption: MutableList<Node> = mutableListOf(tmpNode)
-            while (line(tmpNode.nextSibling.nextSibling) == line) {
+            while (tmpNode.nextSibling.nextSibling.getAttrContent("line") == line) {
                 sndOption.add(tmpNode.nextSibling.nextSibling)
                 tmpNode = tmpNode.nextSibling.nextSibling
-                line = line(tmpNode)
+                line = tmpNode.getAttrContent("line")
             }
-            val dgCond = DgNodeCondition(cond)
-            traverseParents(node.parentNode, dgCond.freeVars)
-            name(node)?.let { name ->
+            val igCond = DgNodeCondition(cond)
+            traverseParents(node.parentNode, igCond.freeVars)
+            node.getAttrContent("name")?.let { name ->
                 if (name != "@") {
-                    deogGraph.dgNodes.add(DGraphCondNode(node, packageName(node), dgCond, fstOption, sndOption))
+                    deogGraph.dgNodes.add(DGraphCondNode(node, node.packageName(), igCond, fstOption, sndOption))
                     val parent = deogGraph.dgNodes.find { it.body == node.parentNode }
-                    parent?.attributes?.add(DGraphCondAttr(name, 0, node, dgCond, fstOption, sndOption))
+                    parent?.attributes?.add(DGraphCondAttr(name, 0, node, igCond, fstOption, sndOption))
                 } else {
                     val parent = deogGraph.dgNodes.find { it.body == node.parentNode }
-                    parent?.attributes?.add(DGraphCondAttr(name, 0, node, dgCond, fstOption, sndOption))
+                    parent?.attributes?.add(DGraphCondAttr(name, 0, node, igCond, fstOption, sndOption))
                 }
             }
         }
     }
 
     private fun traverseParents(node: Node, freeVars: MutableSet<String>) {
-        abstract(node) ?: return
+        node.getAttr("abstract") ?: return
         var sibling = node.firstChild?.nextSibling
-        while (base(sibling) == null && abstract(sibling) == null && sibling != null) {
-            name(sibling)?.let { freeVars.add(it) }
+        while (!sibling.containsAttr("base") && !sibling.containsAttr("abstract") && sibling != null) {
+            sibling.getAttrContent("name")?.let { freeVars.add(it) }
             sibling = sibling?.nextSibling
         }
         traverseParents(node.parentNode, freeVars)

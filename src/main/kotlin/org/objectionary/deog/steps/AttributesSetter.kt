@@ -24,23 +24,24 @@
 
 package org.objectionary.deog.steps
 
-import org.objectionary.deog.abstract
-import org.objectionary.deog.name
-import org.objectionary.deog.repr.DGraphAttr
-import org.objectionary.deog.repr.DGraphNode
-import org.objectionary.deog.repr.DeogGraph
+import org.objectionary.deog.graph.repr.DGraphAttr
+import org.objectionary.deog.graph.repr.DGraphNode
+import org.objectionary.deog.graph.repr.DeogGraph
+import org.objectionary.deog.util.getAttr
+import org.objectionary.deog.util.getAttrContent
 import org.w3c.dom.Node
 
 /**
  * Sets all default attributes of nodes and propagates attributes through the [deogGraph]
  */
-internal class AttributesSetter(private val deogGraph: DeogGraph) {
+class AttributesSetter(private val deogGraph: DeogGraph) {
     /**
      * Aggregate the process of attributes pushing
      */
     fun setAttributes() {
         setDefaultAttributes()
         pushAttributes()
+        // processFreeVars()
     }
 
     /**
@@ -51,9 +52,9 @@ internal class AttributesSetter(private val deogGraph: DeogGraph) {
             val attributes = node.body.childNodes
             for (j in 0 until attributes.length) {
                 val attr: Node = attributes.item(j)
-                abstract(attr)?.let {
-                    name(attr)?.let {
-                        node.attributes.add(DGraphAttr(name(attr)!!, 0, attr))
+                attr.getAttr("abstract")?.let {
+                    attr.getAttrContent("name")?.let {
+                        node.attributes.add(DGraphAttr(attr.getAttrContent("name")!!, 0, attr))
                     }
                 }
             }

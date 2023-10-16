@@ -1,6 +1,6 @@
 package org.objectionary.deog.launch
 
-import org.objectionary.deog.GraphBuilder
+import org.objectionary.deog.graph.GraphBuilder
 import org.objectionary.deog.sources.SrsTransformed
 import org.objectionary.deog.sources.XslTransformer
 import org.objectionary.deog.steps.AttributesSetter

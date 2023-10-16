@@ -24,8 +24,8 @@
 
 package org.objectionary.deog.unit.graph.inner
 
-import org.objectionary.deog.GraphBuilder
-import org.objectionary.deog.repr.DGraphNode
+import org.objectionary.deog.graph.GraphBuilder
+import org.objectionary.deog.graph.repr.DGraphNode
 import org.objectionary.deog.sources.SrsTransformed
 import org.objectionary.deog.sources.XslTransformer
 import org.objectionary.deog.steps.AttributesSetter

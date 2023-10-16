@@ -76,6 +76,9 @@ interface TestBase {
 
     /**
      * @return name of the test being executed
+     *
+     * @todo #34:90min/DEV use @ParameterizedTest here instead of looking into stackTrace. Current approach has some
+     * limitations. For example, if stack depth will increase, this function will output wrong name.
      */
     fun getTestName() = Thread.currentThread().stackTrace[4].methodName
         .substring(5)

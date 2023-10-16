@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package org.objectionary.deog.repr
+package org.objectionary.deog.graph.repr
 
 import org.w3c.dom.Node
 
@@ -31,7 +31,7 @@ import org.w3c.dom.Node
  */
 class DeogGraph {
     /**
-     * Collection of all graph nodes
+     * Collection of all graph nodes (it can be only abstract objects)
      */
     val dgNodes: MutableSet<DGraphNode> = mutableSetOf()
 

@@ -1,6 +1,6 @@
-package org.objectionary.deog.repr
+package org.objectionary.deog.graph.repr
 
-import org.objectionary.deog.name
+import org.objectionary.deog.util.getAttrContent
 import org.w3c.dom.Node
 
 /**
@@ -17,7 +17,7 @@ open class DGraphNode(
     /**
      * Name of the node
      */
-    val name: String? by lazy { name(body) }
+    val name: String? by lazy { body.getAttrContent("name") }
 
     /**
      * Children of this node

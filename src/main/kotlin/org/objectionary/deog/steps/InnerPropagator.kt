@@ -1,13 +1,13 @@
 package org.objectionary.deog.steps
 
-import org.objectionary.deog.abstract
-import org.objectionary.deog.base
-import org.objectionary.deog.findRef
-import org.objectionary.deog.name
-import org.objectionary.deog.packageName
-import org.objectionary.deog.repr.DGraphAttr
-import org.objectionary.deog.repr.DGraphNode
-import org.objectionary.deog.repr.DeogGraph
+import org.objectionary.deog.graph.repr.DGraphAttr
+import org.objectionary.deog.graph.repr.DGraphNode
+import org.objectionary.deog.graph.repr.DeogGraph
+import org.objectionary.deog.util.containsAttr
+import org.objectionary.deog.util.findRef
+import org.objectionary.deog.util.getAttr
+import org.objectionary.deog.util.getAttrContent
+import org.objectionary.deog.util.packageName
 import org.w3c.dom.Node
 
 typealias Abstracts = MutableMap<String, MutableSet<DGraphNode>>
@@ -15,7 +15,7 @@ typealias Abstracts = MutableMap<String, MutableSet<DGraphNode>>
 /**
  * Propagates inner attributes
  */
-internal class InnerPropagator(
+class InnerPropagator(
     private val deogGraph: DeogGraph
 ) {
     private val decorators: MutableMap<DGraphNode, Boolean> = mutableMapOf()
@@ -32,16 +32,21 @@ internal class InnerPropagator(
     private fun collectDecorators() {
         val objects = deogGraph.initialObjects
         for (node in objects) {
-            val name = name(node)
+            val name = node.getAttrContent("name")
             if (name != null && name == "@") {
-                decorators[DGraphNode(node, packageName(node))] = false
+                decorators[DGraphNode(node, node.packageName())] = false
             }
-            if (abstract(node) != null && name != null) {
-                abstracts.getOrPut(name) { mutableSetOf() }.add(DGraphNode(node, packageName(node)))
+            if (node.containsAttr("abstract") && name != null) {
+                abstracts.getOrPut(name) { mutableSetOf() }.add(DGraphNode(node, node.packageName()))
             }
         }
     }
 
+    /**
+     * @todo #34:30min this solution is naive, optimize it (see snippet below)
+     *   while (decorators.containsValue(false)) { ... }
+     *   (this todo has moved here from ddr repository)
+     */
     @Suppress("MAGIC_NUMBER")
     private fun processDecorators() {
         val repetitions = 5
@@ -58,13 +63,13 @@ internal class InnerPropagator(
     @Suppress("AVOID_NULL_CHECKS")
     private fun getBaseAbstract(key: DGraphNode) {
         var tmpKey = key.body
-        while (base(tmpKey)?.startsWith('.') == true) {
+        while (tmpKey.getAttrContent("base")?.startsWith('.') == true) {
             if (tmpKey.previousSibling.previousSibling == null) {
                 break
             }
             tmpKey = tmpKey.previousSibling.previousSibling
         }
-        when (base(tmpKey)) {
+        when (tmpKey.getAttrContent("base")) {
             "^" -> {
                 val abstract = tmpKey.parentNode.parentNode
                 resolveAttrs(tmpKey, abstract, key)
@@ -86,7 +91,7 @@ internal class InnerPropagator(
      * Finds an actual definition of an object that was copied into given [node]
      */
     private fun resolveRefs(node: Node): Node? {
-        abstract(node)?.let { return node }
+        node.getAttr("abstract")?.let { return node }
         return findRef(node, deogGraph.initialObjects, deogGraph)
     }
 
@@ -101,10 +106,10 @@ internal class InnerPropagator(
     ) {
         var tmpAbstract = deogGraph.dgNodes.find { it.body == abstract } ?: return
         var tmpNode: Node? = node.nextSibling.nextSibling ?: return
-        while (name(tmpAbstract.body) != base(key.body)?.substring(1)) {
+        while (tmpAbstract.body.getAttrContent("name") != key.body.getAttrContent("base")?.substring(1)) {
             tmpAbstract = deogGraph.dgNodes.find { graphNode ->
                 tmpAbstract.attributes.find {
-                    base(tmpNode)?.substring(1) == name(it.body)
+                    tmpNode.getAttrContent("base")?.substring(1) == it.body.getAttrContent("name")
                 }?.body == graphNode.body
             } ?: return
             tmpNode = tmpNode?.nextSibling?.nextSibling
@@ -114,20 +119,14 @@ internal class InnerPropagator(
             deogGraph.dgNodes.add(
                 DGraphNode(
                     parent,
-                    packageName(parent)
+                    parent.packageName()
                 )
             )
         }
         val dgParent = deogGraph.dgNodes.find { it.body == parent } ?: return
         tmpAbstract.attributes.forEach { graphNode ->
             dgParent.attributes.find { graphNode.body == it.body }
-                ?: dgParent.attributes.add(
-                    DGraphAttr(
-                        graphNode.name,
-                        graphNode.parentDistance + 1,
-                        graphNode.body
-                    )
-                )
+                ?: dgParent.attributes.add(DGraphAttr(graphNode.name, graphNode.parentDistance + 1, graphNode.body))
         }
         deogGraph.connect(dgParent, tmpAbstract)
         return

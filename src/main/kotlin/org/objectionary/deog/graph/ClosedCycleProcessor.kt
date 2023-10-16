@@ -22,32 +22,32 @@
  * SOFTWARE.
  */
 
-package org.objectionary.deog.steps
+package org.objectionary.deog.graph
 
-import org.objectionary.deog.repr.DGraphNode
-import org.objectionary.deog.repr.DeogGraph
+import org.objectionary.deog.graph.repr.DGraphNode
+import org.objectionary.deog.graph.repr.DeogGraph
 
 /**
  * Processes decoration cycles
  *
- * @param deogGraph graph to be analysed
+ * @param graph graph to be analysed
  * @throws IllegalStateException if after the analysis it turns out that not all nodes of the graph were traversed
  */
 @Throws(IllegalStateException::class)
-internal fun processClosedCycles(deogGraph: DeogGraph) {
+fun processClosedCycles(graph: DeogGraph) {
     val reached: MutableMap<DGraphNode, Boolean> = mutableMapOf()
-    deogGraph.dgNodes.forEach { reached[it] = false }
-    deogGraph.heads.forEach { dfsReachable(it, reached) }
+    graph.dgNodes.forEach { reached[it] = false }
+    graph.heads.forEach { dfsReachable(it, reached) }
     for (entry in reached) {
         if (!entry.value) {
-            deogGraph.heads.add(entry.key)
+            graph.heads.add(entry.key)
             traverseCycles(entry.key, reached)
         }
     }
-    if (deogGraph.dgNodes.size != reached.filter { it.value }.size) {
+    if (graph.dgNodes.size != reached.filter { it.value }.size) {
         throw IllegalStateException(
             "Not all nodes of inheritance graph were reached.\n " +
-                    "Graph size: ${deogGraph.dgNodes.size}, reached nodes: ${reached.filter { it.value }.size}"
+                    "Graph size: ${graph.dgNodes.size}, reached nodes: ${reached.filter { it.value }.size}"
         )
     }
 }
