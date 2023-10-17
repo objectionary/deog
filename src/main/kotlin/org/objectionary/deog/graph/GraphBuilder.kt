@@ -79,8 +79,8 @@ class GraphBuilder(private val documents: MutableMap<Document, Path>) {
         graph.initialObjects.filter { isDecoration(it) }.forEach { decor ->
             val abstractBaseNode = getAbstractBaseObject(decor)
             abstractBaseNode?.let {
-                val igChild = graph.dgNodes.find { it.body == decor.parentNode }!!
-                graph.connect(igChild, abstractBaseNode)
+                val dgChild = graph.dgNodes.find { it.body == decor.parentNode }!!
+                graph.connect(dgChild, abstractBaseNode)
             }
         }
     }

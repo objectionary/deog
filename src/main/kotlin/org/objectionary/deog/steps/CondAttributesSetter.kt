@@ -62,16 +62,16 @@ class CondAttributesSetter(
                 tmpNode = tmpNode.nextSibling.nextSibling
                 line = tmpNode.getAttrContent("line")
             }
-            val igCond = DgNodeCondition(cond)
-            traverseParents(node.parentNode, igCond.freeVars)
+            val condNode = DgNodeCondition(cond)
+            traverseParents(node.parentNode, condNode.freeVars)
             node.getAttrContent("name")?.let { name ->
                 if (name != "@") {
-                    deogGraph.dgNodes.add(DGraphCondNode(node, node.packageName(), igCond, fstOption, sndOption))
+                    deogGraph.dgNodes.add(DGraphCondNode(node, node.packageName(), condNode, fstOption, sndOption))
                     val parent = deogGraph.dgNodes.find { it.body == node.parentNode }
-                    parent?.attributes?.add(DGraphCondAttr(name, 0, node, igCond, fstOption, sndOption))
+                    parent?.attributes?.add(DGraphCondAttr(name, 0, node, condNode, fstOption, sndOption))
                 } else {
                     val parent = deogGraph.dgNodes.find { it.body == node.parentNode }
-                    parent?.attributes?.add(DGraphCondAttr(name, 0, node, igCond, fstOption, sndOption))
+                    parent?.attributes?.add(DGraphCondAttr(name, 0, node, condNode, fstOption, sndOption))
                 }
             }
         }
