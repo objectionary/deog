@@ -24,43 +24,80 @@
 
 package org.objectionary.deog.unit.graph.inner
 
-import org.junit.jupiter.api.Test
-import kotlin.test.Ignore
+import org.objectionary.deog.graph.GraphBuilder
+import org.objectionary.deog.graph.repr.DGraphNode
+import org.objectionary.deog.sources.SrsTransformed
+import org.objectionary.deog.sources.XslTransformer
+import org.objectionary.deog.steps.AttributesSetter
+import org.objectionary.deog.steps.InnerPropagator
+import org.objectionary.deog.unit.graph.TestBase
+import org.apache.commons.io.FileUtils
+import org.junit.jupiter.api.Assumptions
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
+import org.slf4j.LoggerFactory
+import java.io.BufferedReader
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.nio.file.Path
+import java.nio.file.Paths
 
-class InnerTest : InnerBase() {
-    @Test
-    fun `test multiple aliases`() {
-        doTest()
+/**
+ * Base class for inner attributes propagation testing
+ */
+open class InnerTest : TestBase {
+    private val logger = LoggerFactory.getLogger(this.javaClass.name)
+    private val postfix = "tmp"
+
+    @ParameterizedTest
+    @CsvSource(value = [
+        "basic_dir",
+        "condition",
+        "creations",
+        "inner",
+        "inner_concrete",
+        "inner_ordered",
+        "inner_prop",
+        "multiple_aliases",
+        "multiple_closed_cycles",
+        "multiple_cycles",
+        "multiple_trees",
+    ], ignoreLeadingAndTrailingWhitespace = true)
+    fun doTest(testName: String) {
+        if (testName == "condition") {
+            Assumptions.assumeFalse(true, "Test ignored: condition")
+        }
+        val sources = SrsTransformed(Path.of(constructInPath(testName)), XslTransformer(), postfix)
+        val graph = GraphBuilder(sources.walk()).createGraph()
+        val attributesSetter = AttributesSetter(graph)
+        attributesSetter.setAttributes()
+        val innerPropagator = InnerPropagator(graph)
+        innerPropagator.propagateInnerAttrs()
+        val out = ByteArrayOutputStream()
+        printOut(out, graph.dgNodes)
+        val actual = String(out.toByteArray())
+        val bufferedReader: BufferedReader = File(constructOutPath(testName)).bufferedReader()
+        val expected = bufferedReader.use { it.readText() }
+        checkOutput(expected, actual, "In test: ${Path.of(constructInPath(testName))}")
+        try {
+            val tmpDir =
+                Paths.get("${constructInPath(testName)}_$postfix").toString()
+            FileUtils.deleteDirectory(File(tmpDir))
+        } catch (e: Exception) {
+            logger.error(e.printStackTrace().toString())
+        }
     }
 
-    @Test
-    fun `test multiple trees`() = doTest()
+    override fun constructOutPath(directoryName: String): String =
+        "src${sep}test${sep}resources${sep}unit${sep}out${sep}inner$sep$directoryName.txt"
 
-    @Test
-    fun `test multiple cycles`() = doTest()
-
-    @Test
-    fun `test multiple closed cycles`() = doTest()
-
-    @Test
-    fun `test inner`() = doTest()
-
-    @Test
-    fun `test inner concrete`() = doTest()
-
-    @Test
-    fun `test inner prop`() = doTest()
-
-    @Test
-    fun `test inner ordered`() = doTest()
-
-    @Test
-    fun `test creations`() = doTest()
-
-    @Test
-    @Ignore
-    fun `test condition`() = doTest()
-
-    @Test
-    fun `test basic dir`() = doTest()
+    private fun printOut(
+        out: ByteArrayOutputStream,
+        nodes: Set<DGraphNode>
+    ) {
+        nodes.sortedBy { it.name }.forEach { node ->
+            out.write("NODE: ${node.name} ATTRIBUTES:\n".toByteArray())
+            node.attributes.forEach { out.write("name=${it.name}, dist=${it.parentDistance}\n".toByteArray()) }
+        }
+    }
 }

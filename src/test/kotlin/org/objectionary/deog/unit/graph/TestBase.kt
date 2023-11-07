@@ -42,24 +42,22 @@ interface TestBase {
         get() = File.separatorChar
 
     /**
-     * Constructs test execution process
-     */
-    fun doTest()
-
-    /**
      * Compares expected test output with the actual one
      *
      * @param expected expected output
      * @param actual actual output
+     * @param message message
      */
     @Suppress("KDOC_WITHOUT_RETURN_TAG")
     fun checkOutput(
         expected: String,
-        actual: String
+        actual: String,
+        message: String
     ) =
         assertEquals(
             expected.replace("\n", "").replace("\r", ""),
-            actual.replace("\n", "").replace("\r", "")
+            actual.replace("\n", "").replace("\r", ""),
+            message
         )
 
     /**

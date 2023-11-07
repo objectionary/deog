@@ -24,45 +24,81 @@
 
 package org.objectionary.deog.unit.graph.builder
 
-import org.junit.jupiter.api.Test
+import org.objectionary.deog.graph.GraphBuilder
+import org.objectionary.deog.graph.repr.DGraphNode
+import org.objectionary.deog.sources.SrsTransformed
+import org.objectionary.deog.sources.XslTransformer
+import org.objectionary.deog.unit.graph.TestBase
+import org.apache.commons.io.FileUtils
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
+import org.slf4j.LoggerFactory
+import java.io.BufferedReader
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.nio.file.Path
+import java.nio.file.Paths
 
-class BuilderTest : BuilderBase() {
-    @Test
-    fun `test basic dir`() = doTest()
+/**
+ * Base class for graph builder testing
+ */
+open class BuilderTest : TestBase {
+    private val logger = LoggerFactory.getLogger(this.javaClass.name)
+    private val postfix = "tmp"
 
-    @Test
-    fun `test multiple aliases`() = doTest()
+    @ParameterizedTest
+    @CsvSource(
+        value = [
+            "basic_cycle",
+            "basic_dir",
+            "basic_tree",
+            "closed_cycle",
+            "inner",
+            "inner_concrete",
+            "inner_ordered",
+            "multiple_aliases",
+            "multiple_closed_cycles",
+            "multiple_cycles",
+            "multiple_trees",
+            "tree",
+            "triple_cycle"
+        ], ignoreLeadingAndTrailingWhitespace = true
+    )
+    fun doTest(testName: String) {
+        val sources = SrsTransformed(Path.of(constructInPath(testName)), XslTransformer(), postfix)
+        val graph = GraphBuilder(sources.walk()).createGraph()
+        val out = ByteArrayOutputStream()
+        graph.heads.sortedBy { it.name }.forEach { printOut(it, out, mutableSetOf()) }
+        val actual = String(out.toByteArray())
+        val bufferedReader: BufferedReader = File(constructOutPath(testName)).bufferedReader()
+        val expected = bufferedReader.use { it.readText() }
+        checkOutput(expected, actual, "In test: ${Path.of(constructInPath(testName))}")
+        try {
+            val tmpDir =
+                Paths.get("${constructInPath(testName)}_$postfix").toString()
+            FileUtils.deleteDirectory(File(tmpDir))
+        } catch (e: Exception) {
+            logger.error(e.printStackTrace().toString())
+        }
+    }
 
-    @Test
-    fun `test basic tree`() = doTest()
+    override fun constructOutPath(directoryName: String): String =
+        "src${sep}test${sep}resources${sep}unit${sep}out${sep}builder$sep$directoryName.txt"
 
-    @Test
-    fun `test tree`() = doTest()
-
-    @Test
-    fun `test multiple trees`() = doTest()
-
-    @Test
-    fun `test basic cycle`() = doTest()
-
-    @Test
-    fun `test triple cycle`() = doTest()
-
-    @Test
-    fun `test multiple cycles`() = doTest()
-
-    @Test
-    fun `test closed cycle`() = doTest()
-
-    @Test
-    fun `test multiple closed cycles`() = doTest()
-
-    @Test
-    fun `test inner`() = doTest()
-
-    @Test
-    fun `test inner concrete`() = doTest()
-
-    @Test
-    fun `test inner ordered`() = doTest()
+    private fun printOut(
+        node: DGraphNode,
+        out: ByteArrayOutputStream,
+        nodes: MutableSet<DGraphNode>
+    ) {
+        out.write("NODE: name=\"${node.name}\"\n".toByteArray())
+        if (!nodes.contains(node)) {
+            nodes.add(node)
+        } else {
+            return
+        }
+        node.children.sortedBy { it.name }.forEach {
+            out.write("${node.name} CHILD:\n".toByteArray())
+            printOut(it, out, nodes)
+        }
+    }
 }
