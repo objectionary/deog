@@ -57,7 +57,7 @@ open class InnerTest : TestBase {
         "multiple_cycles",
         "multiple_trees",
     ], ignoreLeadingAndTrailingWhitespace = true)
-    fun doTest(testName: String) {
+    fun `inner attributes propagator test`(testName: String) {
         if (testName == "condition") {
             Assumptions.assumeFalse(true, "Test ignored: condition")
         }

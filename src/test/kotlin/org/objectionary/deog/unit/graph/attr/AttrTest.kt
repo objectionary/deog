@@ -57,7 +57,7 @@ open class AttrTest : TestBase {
         "tree",
         "triple_cycle"
     ], ignoreLeadingAndTrailingWhitespace = true)
-    fun doTest(testName: String) {
+    fun `attributes propagation test`(testName: String) {
         val sources = SrsTransformed(constructInPath(testName), XslTransformer(), postfix)
         val graph = GraphBuilder(sources.walk()).createGraph()
         AttributesSetter(graph).setAttributes()

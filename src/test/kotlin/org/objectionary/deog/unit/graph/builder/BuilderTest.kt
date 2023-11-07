@@ -58,7 +58,7 @@ open class BuilderTest : TestBase {
             "triple_cycle"
         ], ignoreLeadingAndTrailingWhitespace = true
     )
-    fun doTest(testName: String) {
+    fun `graph builder test`(testName: String) {
         val sources = SrsTransformed(constructInPath(testName), XslTransformer(), postfix)
         val graph = GraphBuilder(sources.walk()).createGraph()
         val actual = stringOutput(graph.heads)

@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 /**
  * Tests generation of temporary directory for modified xmir files
  */
-open class TempDirectoryBase : TestBase {
+open class TempDirectoryTest : TestBase {
     private val postfix = "tmp"
 
     /**
@@ -38,12 +38,13 @@ open class TempDirectoryBase : TestBase {
             "triple_cycle"
         ], ignoreLeadingAndTrailingWhitespace = true
     )
-    fun doTest(testName: String) {
+    fun `different directories format as input test`(testName: String) {
         for (i in 0..2) {
             val path = Path.of("${constructInPath(testName)}${sep.toString().repeat(i)}")
-            SrsTransformed(path, XslTransformer(), postfix).walk()
+            val sources = SrsTransformed(path, XslTransformer(), postfix)
+            sources.walk()
             checkIfTempDirExists(path)
-            deleteTempDir(path)
+            deleteTempDir(sources.resPath)
         }
     }
 
