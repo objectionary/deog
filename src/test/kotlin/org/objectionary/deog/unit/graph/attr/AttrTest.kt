@@ -80,14 +80,4 @@ open class AttrTest : TestBase {
         }
         return String(out.toByteArray())
     }
-
-    private fun printOut(
-        out: ByteArrayOutputStream,
-        nodes: Set<DGraphNode>
-    ) {
-        nodes.sortedBy { it.name }.forEach { node ->
-            out.write("NODE: ${node.name} ATTRIBUTES:\n".toByteArray())
-            node.attributes.forEach { out.write("name=${it.name}, dist=${it.parentDistance}\n".toByteArray()) }
-        }
-    }
 }
