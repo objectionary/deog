@@ -30,21 +30,15 @@ import org.objectionary.deog.sources.SrsTransformed
 import org.objectionary.deog.sources.XslTransformer
 import org.objectionary.deog.steps.AttributesSetter
 import org.objectionary.deog.unit.graph.TestBase
-import org.apache.commons.io.FileUtils
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
-import org.slf4j.LoggerFactory
-import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.nio.file.Path
-import java.nio.file.Paths
 
 /**
  * Base class for attributes propagation testing
  */
 open class AttrTest : TestBase {
-    private val logger = LoggerFactory.getLogger(this.javaClass.name)
     private var postfix = "tmp"
 
     @ParameterizedTest
@@ -64,27 +58,28 @@ open class AttrTest : TestBase {
         "triple_cycle"
     ], ignoreLeadingAndTrailingWhitespace = true)
     fun doTest(testName: String) {
-        val sources = SrsTransformed(Path.of(constructInPath(testName)), XslTransformer(), postfix)
+        val sources = SrsTransformed(constructInPath(testName), XslTransformer(), postfix)
         val graph = GraphBuilder(sources.walk()).createGraph()
-        val attributesSetter = AttributesSetter(graph)
-        attributesSetter.setAttributes()
-        val out = ByteArrayOutputStream()
-        printOut(out, graph.dgNodes)
-        val actual = String(out.toByteArray())
-        val bufferedReader: BufferedReader = File(constructOutPath(testName)).bufferedReader()
-        val expected = bufferedReader.use { it.readText() }
-        checkOutput(expected, actual, "In test: ${Path.of(constructInPath(testName))}")
-        try {
-            val tmpDir =
-                Paths.get("${constructInPath(testName)}_$postfix").toString()
-            FileUtils.deleteDirectory(File(tmpDir))
-        } catch (e: Exception) {
-            logger.error(e.printStackTrace().toString())
-        }
+        AttributesSetter(graph).setAttributes()
+        val actual = stringOutput(graph.dgNodes)
+        val expected = constructOutPath(testName).toFile().bufferedReader().use { it.readText() }
+        checkOutput(expected, actual, "In test: ${constructInPath(testName)}")
+        deleteTempDir(sources.resPath)
     }
 
-    override fun constructOutPath(directoryName: String): String =
-        "src${sep}test${sep}resources${sep}unit${sep}out${sep}attr$sep$directoryName.txt"
+    override fun constructOutPath(directoryName: String): Path =
+        Path.of("src${sep}test${sep}resources${sep}unit${sep}out${sep}attr$sep$directoryName.txt")
+
+    private fun stringOutput(
+        nodes: Set<DGraphNode>
+    ): String {
+        val out = ByteArrayOutputStream()
+        nodes.sortedBy { it.name }.forEach { node ->
+            out.write("NODE: ${node.name} ATTRIBUTES:\n".toByteArray())
+            node.attributes.forEach { out.write("name=${it.name}, dist=${it.parentDistance}\n".toByteArray()) }
+        }
+        return String(out.toByteArray())
+    }
 
     private fun printOut(
         out: ByteArrayOutputStream,

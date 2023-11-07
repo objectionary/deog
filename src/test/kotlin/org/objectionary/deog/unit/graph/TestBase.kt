@@ -24,7 +24,10 @@
 
 package org.objectionary.deog.unit.graph
 
+import org.apache.commons.io.FileUtils
 import java.io.File
+import java.io.IOException
+import java.nio.file.Path
 import kotlin.test.assertEquals
 
 /**
@@ -64,21 +67,26 @@ interface TestBase {
      * @param directoryName name of the input directory
      * @return path to input location
      */
-    fun constructInPath(directoryName: String): String = "src${sep}test${sep}resources${sep}unit${sep}in$sep$directoryName"
+    fun constructInPath(directoryName: String): Path =
+        Path.of("src${sep}test${sep}resources${sep}unit${sep}in$sep$directoryName")
 
     /**
      * @param directoryName name of the output directory
      * @return path to output location
      */
-    fun constructOutPath(directoryName: String): String
+    fun constructOutPath(directoryName: String): Path
 
     /**
-     * @return name of the test being executed
+     * Deletes temporary output directory
      *
-     * @todo #34:90min/DEV use @ParameterizedTest here instead of looking into stackTrace. Current approach has some
-     * limitations. For example, if stack depth will increase, this function will output wrong name.
+     * @param path path to source directory
+     * @throws IOException
      */
-    fun getTestName() = Thread.currentThread().stackTrace[4].methodName
-        .substring(5)
-        .replace(' ', '_')
+    fun deleteTempDir(path: Path) {
+        try {
+            FileUtils.deleteDirectory(path.toFile())
+        } catch (e: IOException) {
+            throw IOException("Trying to delete not existing temporary directory", e)
+        }
+    }
 }

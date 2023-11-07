@@ -40,19 +40,10 @@ open class TempDirectoryBase : TestBase {
     )
     fun doTest(testName: String) {
         for (i in 0..2) {
-            val path = constructInPath(getTestName()) + sep.toString().repeat(i)
-            deleteTempDirIfExists(Path.of(path))
-            SrsTransformed(Path.of(path), XslTransformer(), postfix).walk()
-            checkIfTempDirExists(Path.of(path))
-            deleteTempDirIfExists(Path.of(path))
-        }
-    }
-
-    private fun deleteTempDirIfExists(pathToSource: Path) {
-        val strPathToTemp = "${pathToSource}_$postfix"
-        val tempDir = File(strPathToTemp)
-        if (tempDir.exists() && tempDir.isDirectory) {
-            tempDir.deleteRecursively()
+            val path = Path.of("${constructInPath(testName)}${sep.toString().repeat(i)}")
+            SrsTransformed(path, XslTransformer(), postfix).walk()
+            checkIfTempDirExists(path)
+            deleteTempDir(path)
         }
     }
 
@@ -62,5 +53,5 @@ open class TempDirectoryBase : TestBase {
         assertTrue { tempDir.exists() }
     }
 
-    override fun constructOutPath(directoryName: String) = ""
+    override fun constructOutPath(directoryName: String): Path = Path.of("")
 }
