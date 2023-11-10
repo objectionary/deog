@@ -30,6 +30,7 @@ import org.objectionary.deog.sources.SrsTransformed
 import org.objectionary.deog.sources.XslTransformer
 import org.objectionary.deog.steps.AttributesSetter
 import org.objectionary.deog.unit.graph.TestBase
+import org.apache.commons.io.FileUtils
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import java.io.ByteArrayOutputStream
@@ -64,7 +65,7 @@ open class AttrTest : TestBase {
         val actual = stringOutput(graph.dgNodes)
         val expected = constructOutPath(testName).toFile().bufferedReader().use { it.readText() }
         checkOutput(expected, actual, "In test: ${constructInPath(testName)}")
-        deleteTempDir(sources.resPath)
+        FileUtils.deleteDirectory(sources.resPath.toFile())
     }
 
     override fun constructOutPath(directoryName: String): Path =

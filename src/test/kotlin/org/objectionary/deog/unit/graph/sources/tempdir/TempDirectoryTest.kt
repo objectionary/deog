@@ -3,6 +3,7 @@ package org.objectionary.deog.unit.graph.sources.tempdir
 import org.objectionary.deog.sources.SrsTransformed
 import org.objectionary.deog.sources.XslTransformer
 import org.objectionary.deog.unit.graph.TestBase
+import org.apache.commons.io.FileUtils
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import java.io.File
@@ -44,7 +45,7 @@ open class TempDirectoryTest : TestBase {
             val sources = SrsTransformed(path, XslTransformer(), postfix)
             sources.walk()
             checkIfTempDirExists(path)
-            deleteTempDir(sources.resPath)
+            FileUtils.deleteDirectory(sources.resPath.toFile())
         }
     }
 

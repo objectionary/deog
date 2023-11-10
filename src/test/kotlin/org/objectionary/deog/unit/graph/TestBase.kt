@@ -24,9 +24,7 @@
 
 package org.objectionary.deog.unit.graph
 
-import org.apache.commons.io.FileUtils
 import java.io.File
-import java.io.IOException
 import java.nio.file.Path
 import kotlin.test.assertEquals
 
@@ -75,18 +73,4 @@ interface TestBase {
      * @return path to output location
      */
     fun constructOutPath(directoryName: String): Path
-
-    /**
-     * Deletes temporary output directory
-     *
-     * @param path path to source directory
-     * @throws IOException
-     */
-    fun deleteTempDir(path: Path) {
-        try {
-            FileUtils.deleteDirectory(path.toFile())
-        } catch (e: IOException) {
-            throw IOException("Trying to delete not existing temporary directory", e)
-        }
-    }
 }
