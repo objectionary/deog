@@ -64,7 +64,7 @@ graph.dgNodes.forEach { node ->          // traversing each node
 
 `AttributesUtil` file provides a useful API for getting quick access to `org.w3c.dom.Node` objects' attributes.
 
-For instance, this is how you would access the `line` attribute of EO object: `line(node)`  
+For instance, this is how you would access the `line` attribute of EO object: `line(node)`
 You also can find which abstract object the `ref` attribute points to like this:
 ```
 findRef(
@@ -100,7 +100,7 @@ Consider the following EO program.
     ^.talk "Meow" > @
 ```
 
-The resulting graph can be considered to look like below. Each node is represented by a rectangle. 
+The resulting graph can be considered to look like below. Each node is represented by a rectangle.
 All the attributes of the node are listed in the rectangle.
 
 ![](assets/diag.drawio.png)
