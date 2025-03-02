@@ -1,7 +1,11 @@
-.idea
 *.iml
-target
-*_deog
-*tmp
 *TMP
+*_deog
 *eo_outputs
+*tmp
+.DS_Store
+.idea
+.idea/
+node_modules/
+target
+target/
