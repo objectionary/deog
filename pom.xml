@@ -218,7 +218,7 @@
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-xml</artifactId>
-      <version>0.26.0</version>
+      <version>0.33.5</version>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
